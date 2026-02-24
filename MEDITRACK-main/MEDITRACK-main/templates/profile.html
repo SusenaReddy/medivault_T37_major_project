@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Settings | MediTrack</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg-light: #f3e5f5; /* Light purple background */
+      --text-light: #000;
+      --purple: #b57edc;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    .profile-container {
+      max-width: 700px;
+      margin: auto;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin-bottom: 1rem;
+    }
+
+    .avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--purple);
+    }
+
+    .edit-avatar {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: var(--purple);
+      color: white;
+      border-radius: 50%;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .form-check-input {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container mt-5">
+    <div class="mb-4">
+      <h3>Profile Settings</h3>
+    </div>
+
+    <!-- Avatar -->
+    <div class="text-center">
+      <div class="avatar-wrapper mx-auto">
+        <img src="https://via.placeholder.com/150" id="profileImage" alt="Avatar">
+        <label for="uploadAvatar" class="edit-avatar">
+          <i class="bi bi-pencil-fill"></i>
+        </label>
+        <input type="file" id="uploadAvatar" accept="image/*" class="d-none">
+      </div>
+    </div>
+
+    <!-- Profile Form -->
+    <form id="profileForm">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="name" value="Shreeya Sharma">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" value="shreeya@example.com">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="phone" value="+91 9876543210">
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+    </form>
+  </div>
+
+  <!-- Cropper Modal -->
+  <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img id="cropperImage" class="w-100" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" id="cropImageBtn">Crop & Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script>
+    // Avatar Cropping
+    const uploadInput = document.getElementById('uploadAvatar');
+    const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+    const cropperImage = document.getElementById('cropperImage');
+    const profileImage = document.getElementById('profileImage');
+    let cropper;
+
+    uploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        cropperImage.src = reader.result;
+        cropperModal.show();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('cropperModal').addEventListener('shown.bs.modal', () => {
+      cropper = new Cropper(cropperImage, {
+        aspectRatio: 1,
+        viewMode: 1
+      });
+    });
+
+    document.getElementById('cropperModal').addEventListener('hidden.bs.modal', () => {
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+    });
+
+    document.getElementById('cropImageBtn').addEventListener('click', () => {
+      const canvas = cropper.getCroppedCanvas({ width: 150, height: 150 });
+      profileImage.src = canvas.toDataURL();
+      cropperModal.hide();
+    });
+
+    // Form Save
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      console.log("Profile updated:", { name, email, phone });
+      alert("Profile updated successfully!");
+    });
+  </script>
+</body>
+</html>

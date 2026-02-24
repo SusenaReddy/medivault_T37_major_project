@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Dashboard — MediPortal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --teal:        #0d9488;
+            --teal-light:  #99f6e4;
+            --teal-dark:   #0f766e;
+            --teal-faint:  #f0fdfa;
+            --slate:       #1e293b;
+            --slate-mid:   #475569;
+            --slate-light: #94a3b8;
+            --border:      #e2e8f0;
+            --white:       #ffffff;
+            --bg:          #f8fafc;
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            --sidebar-w:   270px;
+            --red:         #ef4444;
+            --amber:       #f59e0b;
+            --green:       #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--slate);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ══ SIDEBAR ══════════════════════════════════════════ */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--slate);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .brand-name {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            color: var(--teal-light);
+            letter-spacing: -0.02em;
+        }
+
+        .brand-sub {
+            font-size: 0.72rem;
+            color: var(--slate-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 2px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 16px 0;
+            flex: 1;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--slate-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav li a:hover {
+            color: var(--white);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .sidebar-nav li.active a {
+            color: var(--teal-light);
+            background: rgba(13,148,136,0.12);
+            border-left-color: var(--teal);
+        }
+
+        .sidebar-nav li i { width: 18px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--slate-light);
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: color 0.2s;
+        }
+
+        .sidebar-footer a:hover { color: var(--red); }
+
+        /* ══ MAIN ═════════════════════════════════════════════ */
+        .main { flex: 1; padding: 36px 40px; overflow-y: auto; max-width: 1200px; }
+
+        /* ── Page header ── */
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.9rem;
+            color: var(--slate);
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+
+        .page-header h1 span { color: var(--teal); }
+
+        .page-header p {
+            font-size: 0.88rem;
+            color: var(--slate-light);
+            margin-top: 4px;
+        }
+
+        /* ── Info cards ── */
+        .info-card {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 28px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .info-card-header .icon {
+            width: 36px; height: 36px;
+            background: var(--teal-faint);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--teal);
+            font-size: 0.95rem;
+        }
+
+        .info-card-header h3 {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--slate-light);
+            font-weight: 600;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--slate-light);
+            margin-bottom: 4px;
+        }
+
+        .detail-item span {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--slate);
+        }
+
+        /* ── Search ── */
+        .search-section { margin-bottom: 28px; }
+
+        .search-section h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 14px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 13px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: var(--white);
+            color: var(--slate);
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+        }
+
+        .btn {
+            padding: 13px 22px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 600;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--teal-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13,148,136,0.3);
+        }
+
+        /* ── Patient card ── */
+        #patientCard { display: none; }
+
+        .patient-banner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--teal-faint);
+            border: 1px solid var(--teal-light);
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+
+        .patient-avatar {
+            width: 48px; height: 48px;
+            background: var(--teal);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+            font-family: 'Fraunces', serif;
+            flex-shrink: 0;
+        }
+
+        .patient-banner-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--slate);
+        }
+
+        .patient-banner-info p {
+            font-size: 0.82rem;
+            color: var(--slate-mid);
+        }
+
+        /* ── Tabs ── */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 7px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--slate-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: var(--white);
+            color: var(--teal);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .tab-btn .count {
+            background: var(--teal);
+            color: var(--white);
+            border-radius: 20px;
+            padding: 1px 8px;
+            font-size: 0.72rem;
+        }
+
+        .tab-btn:not(.active) .count {
+            background: var(--border);
+            color: var(--slate-light);
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Insurance Requests Table ── */
+        .table-wrapper {
+            background: var(--white);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        thead th {
+            padding: 13px 18px;
+            text-align: left;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--slate-light);
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--teal-faint); }
+
+        tbody td {
+            padding: 14px 18px;
+            font-size: 0.88rem;
+            color: var(--slate);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-pending  { background: #fef3c7; color: #92400e; }
+        .badge-approved { background: #dcfce7; color: #166534; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
+        .badge-review   { background: #dbeafe; color: #1e40af; }
+
+        /* ── Reports Grid ── */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .report-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s;
+        }
+
+        .report-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13,148,136,0.1);
+        }
+
+        .report-card-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .icon-pdf  { background: #fee2e2; color: #dc2626; }
+        .icon-img  { background: #dbeafe; color: #2563eb; }
+        .icon-doc  { background: #ede9fe; color: #7c3aed; }
+        .icon-file { background: var(--teal-faint); color: var(--teal); }
+
+        .report-card h4 {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--slate);
+            line-height: 1.3;
+        }
+
+        .report-card .meta {
+            font-size: 0.75rem;
+            color: var(--slate-light);
+        }
+
+        .report-card .category-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            background: var(--teal-faint);
+            color: var(--teal-dark);
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .view-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--teal-faint);
+            color: var(--teal-dark);
+            border: 1px solid var(--teal-light);
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background: var(--teal);
+            color: var(--white);
+            border-color: var(--teal);
+        }
+
+        /* ── Empty / Loading states ── */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--slate-light);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .empty-state p { font-size: 0.9rem; }
+
+        .loading {
+            text-align: center;
+            padding: 36px;
+            color: var(--slate-light);
+            font-size: 0.9rem;
+        }
+
+        .loading i { animation: spin 1s linear infinite; margin-right: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-family: inherit;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.success { background: #0d9488; color: #fff; }
+        .toast.error   { background: #ef4444; color: #fff; }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .main { padding: 24px 20px; }
+            .sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-name">MediPortal</div>
+        <div class="brand-sub">Insurance Portal</div>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="active">
+            <a href="/insurer_dashboard">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+        </li>
+    </ul>
+    <div class="sidebar-footer">
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+    </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div>
+            <h1>Insurance <span>Dashboard</span></h1>
+            <p>Review patient insurance requests and medical reports</p>
+        </div>
+    </div>
+
+    <!-- Provider Info Card -->
+    <div class="info-card">
+        <div class="info-card-header">
+            <div class="icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>Provider Information</h3>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Provider Name</label>
+                <span>{{ providername }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Provider ID</label>
+                <span>{{ providerid }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Contact</label>
+                <span>{{ providercontact }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Email</label>
+                <span>{{ provideremail }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Address</label>
+                <span>{{ provideraddress }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Search -->
+    <div class="search-section">
+        <h2><i class="fas fa-search" style="color:var(--teal);margin-right:8px"></i>Search Patient</h2>
+        <div class="search-row">
+            <input type="text" class="search-input" id="patientSearch"
+                   placeholder="Enter Patient ID (e.g. a1b2c3d4e5f6)..." />
+            <button class="btn btn-primary" id="searchBtn">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </div>
+
+    <!-- Patient Card + Tabs (hidden until search) -->
+    <div id="patientCard">
+
+        <!-- Patient Banner -->
+        <div class="patient-banner">
+            <div class="patient-avatar" id="patientInitial">?</div>
+            <div class="patient-banner-info">
+                <h4 id="patientName">—</h4>
+                <p id="patientMeta">—</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('requests')" id="tab-requests">
+                <i class="fas fa-file-invoice"></i> Insurance Requests
+                <span class="count" id="reqCount">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('reports')" id="tab-reports">
+                <i class="fas fa-folder-open"></i> Medical Reports
+                <span class="count" id="repCount">0</span>
+            </button>
+        </div>
+
+        <!-- Tab: Insurance Requests -->
+        <div class="tab-panel active" id="panel-requests">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsBody">
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-search"></i>
+                                    <p>Search for a patient to view their insurance requests</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab: Medical Reports -->
+        <div class="tab-panel" id="panel-reports">
+            <div class="reports-grid" id="reportsGrid">
+                <!-- filled by JS -->
+            </div>
+            <div id="reportsEmpty" class="empty-state" style="display:none">
+                <i class="fas fa-folder-open"></i>
+                <p>No medical reports found for this patient</p>
+            </div>
+        </div>
+
+    </div><!-- /patientCard -->
+
+</main>
+
+<script>
+    let currentPatientId = null;
+
+    // ── Search ────────────────────────────────────────────────
+    document.getElementById('searchBtn').addEventListener('click', doSearch);
+    document.getElementById('patientSearch').addEventListener('keydown', e => {
+        if (e.key === 'Enter') doSearch();
+    });
+
+    function doSearch() {
+        const pid = document.getElementById('patientSearch').value.trim();
+        if (!pid) { toast('Please enter a Patient ID', 'error'); return; }
+        loadPatient(pid);
+    }
+
+    function loadPatient(pid) {
+        document.getElementById('patientCard').style.display = 'none';
+
+        fetch(`/api/insurer/patient/${encodeURIComponent(pid)}`)
+            .then(r => { if (!r.ok) throw new Error('Not found'); return r.json(); })
+            .then(data => {
+                currentPatientId = pid;
+
+                // Banner
+                const initials = data.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+                document.getElementById('patientInitial').textContent = initials;
+                document.getElementById('patientName').textContent    = data.name;
+                document.getElementById('patientMeta').textContent    =
+                    `ID: ${data.id}  •  Age: ${data.age}  •  ${data.gender}  •  ${data.contact}`;
+
+                document.getElementById('patientCard').style.display = 'block';
+
+                // Load both tabs
+                loadRequests(pid);
+                loadReports(pid);
+
+                toast('Patient found', 'success');
+            })
+            .catch(() => toast('Patient not found. Check the ID and try again.', 'error'));
+    }
+
+    // ── Insurance Requests ────────────────────────────────────
+    function loadRequests(pid) {
+        const tbody = document.getElementById('requestsBody');
+        tbody.innerHTML = `<tr><td colspan="6"><div class="loading"><i class="fas fa-spinner"></i>Loading requests…</div></td></tr>`;
+
+        fetch(`/api/insurer/requests/${encodeURIComponent(pid)}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('reqCount').textContent = data.requests.length;
+
+                if (data.requests.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-file-invoice"></i><p>No insurance requests found for this patient</p></div></td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.requests.map(req => `
+                    <tr>
+                        <td><strong>#${req.RequestID}</strong></td>
+                        <td>${req.RequestType || '—'}</td>
+                        <td>${req.Amount ? '₹' + Number(req.Amount).toLocaleString() : '—'}</td>
+                        <td>${formatDate(req.RequestDate)}</td>
+                        <td>${statusBadge(req.Status)}</td>
+                        <td style="color:var(--slate-mid);font-size:0.82rem">${req.Notes || '—'}</td>
+                    </tr>
+                `).join('');
+            })
+            .catch(() => {
+                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load requests</p></div></td></tr>`;
+            });
+    }
+
+    // ── Medical Reports ───────────────────────────────────────
+    function loadReports(pid) {
+        const grid  = document.getElementById('reportsGrid');
+        const empty = document.getElementById('reportsEmpty');
+        grid.innerHTML  = `<div class="loading" style="grid-column:1/-1"><i class="fas fa-spinner"></i>Loading reports…</div>`;
+        empty.style.display = 'none';
+
+        fetch(`/api/insurer/reports/${encodeURIComponent(pid)}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('repCount').textContent = data.reports.length;
+
+                if (data.reports.length === 0) {
+                    grid.innerHTML = '';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                grid.innerHTML = data.reports.map(rep => `
+                    <div class="report-card">
+                        <div class="report-card-icon ${fileIcon(rep.FileType)}">
+                            <i class="${fileIconClass(rep.FileType)}"></i>
+                        </div>
+                        <div>
+                            <h4>${rep.ReportName || 'Unnamed Report'}</h4>
+                            <div class="meta">${formatDate(rep.UploadedAt)}</div>
+                        </div>
+                        <span class="category-tag">${rep.Category || 'General'}</span>
+                        <a href="/uploads/${rep.FilePath}" target="_blank" class="view-btn">
+                            <i class="fas fa-eye"></i> View Report
+                        </a>
+                    </div>
+                `).join('');
+            })
+            .catch(() => {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+            });
+    }
+
+    // ── Tabs ──────────────────────────────────────────────────
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        document.getElementById('panel-' + name).classList.add('active');
+    }
+
+    // ── Helpers ───────────────────────────────────────────────
+    function statusBadge(status) {
+        const map = {
+            'Pending':  'badge-pending',
+            'Approved': 'badge-approved',
+            'Rejected': 'badge-rejected',
+            'Under Review': 'badge-review'
+        };
+        const cls = map[status] || 'badge-pending';
+        return `<span class="badge ${cls}">${status || 'Pending'}</span>`;
+    }
+
+    function fileIcon(type) {
+        if (!type) return 'icon-file';
+        const t = type.toLowerCase();
+        if (t === 'pdf') return 'icon-pdf';
+        if (['jpg','jpeg','png','gif'].includes(t)) return 'icon-img';
+        if (['doc','docx'].includes(t)) return 'icon-doc';
+        return 'icon-file';
+    }
+
+    function fileIconClass(type) {
+        if (!type) return 'fas fa-file';
+        const t = type.toLowerCase();
+        if (t === 'pdf') return 'fas fa-file-pdf';
+        if (['jpg','jpeg','png','gif'].includes(t)) return 'fas fa-file-image';
+        if (['doc','docx'].includes(t)) return 'fas fa-file-word';
+        return 'fas fa-file-alt';
+    }
+
+    function formatDate(dt) {
+        if (!dt) return '—';
+        return new Date(dt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+    }
+
+    function toast(msg, type = 'success') {
+        const el = document.createElement('div');
+        el.className = `toast ${type}`;
+        el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+        document.body.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 350); }, 3000);
+    }
+</script>
+</body>
+</html>

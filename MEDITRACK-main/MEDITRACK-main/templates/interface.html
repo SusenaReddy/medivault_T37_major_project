@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Info Tracker</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ddd5f3;
+        }
+        .header {
+            background-color: #ddd5f3;
+            color: black;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: fixed;
+            top: 0;
+            width: 99%;
+            z-index: 1000;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: black;
+            text-decoration: none;
+            margin: 0 30px;
+            font-size: 20px;
+        }
+        .container {
+            padding: 80px 20px 20px; /* Adjusted padding to account for fixed header */
+        }
+        .section {
+            margin: 20px 0;
+            position: relative;
+            text-align: center;
+        }
+        .section img {
+            padding-top: 12%;
+            width: 100%;
+            height: 400px;
+        }
+        .section1 img {
+            padding-top: 8%;
+            width: 200px;
+            height: 200px;
+            padding-left: 10%;
+
+        }
+        .text-overlay {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background-color: #ff00ff;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            font-family:Lucida Bright;
+            font-size : 20px;
+        }
+        .text-overlay1 {
+            position: absolute;
+            top: 110%;
+            left: 45%;
+            color: grey;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 100%;
+            font-family:Didot;
+            font-size : 25px;
+        }
+        .section2{
+            position: absolute;
+            left:15%;
+            color: grey;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 100%;
+            font-family:Didot;
+            font-size : 30px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 18px;
+            }
+            .nav-links a {
+                font-size: 16px;
+                margin: 5px;
+            }
+            .text-overlay {
+                font-size: 14px;
+            }
+        }
+        .info-section {
+            text-align: center;
+            background-color:#ddd5f3;
+            padding: 40px 20px;
+            color: grey;
+        }
+        .info-section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-family:Garamond;
+            font-size : 40px;
+        }
+        .info-cards {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .info-cards1 {
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 150px;
+        }
+        .info-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            width: 240px;
+            text-align: center;
+        }
+        .info-card1 {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            width: 340px;
+            text-align: center;
+        }
+        .info-card img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .info-card1 img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .info-card h3 {
+            font-size: 20px;
+            color: #ff00ff;
+            margin-bottom: 10px;}
+
+            .info-card1 h3 {
+            font-size: 20px;
+            color: black;
+            margin-bottom: 10px;
+        }
+        .info-card p {
+            font-size: 18px;
+        }
+        .container1 {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container1 h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .how {
+            display: inline-block;
+            width: 25%;
+            margin: 10px;
+            padding: 20px;
+            background: #ddd5f3;
+        }
+
+        .how img {
+            max-width: 200px;
+            margin-bottom: 15px;
+        }
+
+        .how h4 {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .how p {
+            font-size: 30px;
+            color: #666;
+        }
+
+    </style>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</head>
+<body>
+    <header class="header">
+        <h1>MediTrack</h1>
+        <div class="nav-links">
+            <div class="dropdown">
+                <a href="#">Login</a>
+                <div class="dropdown-content">
+                    <a href="/login">Patient</a>
+                    <a href="/login">Doctor</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="#">Sign Up</a>
+                <div class="dropdown-content">
+                    <a href="/patient_signup">Patient</a>
+                    <a href="/doctor_signup">Doctor</a>
+                </div>
+  </div>
+  <div class="dropdown">
+  <a href="#">Others</a>
+  <div class="dropdown-content">
+    <a href="/login">Insurer</a>
+    <a href="/login">Diagnostic</a>
+            </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="section">
+            <img src="static\img\Physical records transforming into electronic health record.png" alt="Transform Healthcare">
+            <div class="text-overlay">
+                <h2>Transform Your Healthcare Experience With MedicTrack</h2>
+            </div>
+        </div>
+        <div class="section1">
+           <img src="https://health-e.in/wp-content/uploads/2022/10/layer1.svg" alt="Health Information">
+            <div class="text-overlay1">
+                <h2>All Your Health Information in One Place, Accessible Anywhere, Anytime.</h2>
+                <p>No more carrying bulky medical records for doctor’s appointments! Empower your caregiver with your entire medical history from a single platform and get the best possible care in a timely manner.</p>
+            </div>
+        </div>
+    </div>
+    <div class="info-section">
+        <h2>Your Source for Safe Health Records</h2>
+        <div class="info-cards">
+            <div class="info-card">
+                <img src="https://cdn2.iconfinder.com/data/icons/business-methodologies-flat/60/Document-Accuracy-corporate-accurate-target-512.png" alt="Accurate Information">
+                <h3>Accurate Information</h3>
+                <p>Provide accurate, up-to-date, and complete health information about patients.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://tse2.mm.bing.net/th?id=OIP.96K0gcIDY0Q6weUMo91N-AHaJT&pid=Api&P=0&h=180" alt="Help Health Providers">
+                <h3>Help Health Providers</h3>
+                <p>Helping Doctors effectively diagnose the patients, reduce errors and prescribe accurate treatments.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://static.vecteezy.com/system/resources/previews/010/911/927/original/data-protection-concept-for-web-page-banner-presentation-social-media-documents-cards-posters-illustration-network-security-people-character-data-security-and-privacy-concept-vector.jpg" alt="Privacy and Security">
+                <h3>Privacy and Security</h3>
+                <p>Enhancing privacy and security of patient and family's medical records.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://static.vecteezy.com/system/resources/previews/021/845/491/original/share-icon-people-sharing-data-photos-links-posts-and-news-in-social-networks-social-networking-concept-flat-illustration-vector.jpg" alt="Sharing Power">
+                <h3>Sharing Power</h3>
+                <p>The ability to share personal health record anywhere at anytime via mobile for better and timely decision making.</p>
+            </div>
+        </div>
+    </div>
+    <section><div class="container1">
+        <h2>How Does Health-e Work?</h2>
+        <div class="how">
+            <img src="https://health-e.in/wp-content/uploads/2023/03/download-app.svg">
+            <h4>Step 1</h4>
+            <p>Signup in Website  & create your health profile </p>
+        </div>
+        <div class="how">
+            <img src="https://health-e.in/wp-content/uploads/2023/03/scan-details.svg">
+            <h4>Step 2</h4>
+            <p>Scan & upload your medical records for instant access</p>
+        </div>
+        <div class="how">
+            <img src="https://health-e.in/wp-content/uploads/2023/03/monitor-key.svg">
+            <h4>Step 3</h4>
+            <p>Monitor your key parameters & take charge of your health</p>
+        </div>
+        </div>
+        <div class="section2">
+            <center> <h2>Your Medical Records at your fingertips and<br>
+                 Access anytime, anywhere</h2></center>
+         </div>
+    <div class="info-section">
+        <div class="info-cards1">
+            <div class="info-card1">
+                <img src="https://health-e.in/wp-content/uploads/2022/10/01-align-center.svg" alt="Accurate Information">
+                <h3>Simplified digital health locker</h3>
+            </div>
+            <div class="info-card1">
+                <img src="https://health-e.in/wp-content/uploads/2022/10/pulse.svg" alt="Accurate Information">
+                <h3>Personalized
+                    health monitoring</h3>
+            </div>
+            <div class="info-card1">
+                <img src="https://health-e.in/wp-content/uploads/2022/10/doctor.svg" alt="Accurate Information">
+                <h3>Preventative healthcare solutions</h3>
+            </div>
+        </div>
+    </div>  
+    <div class="info-section">
+        <h2>Trusted Insurance Providers</h2>
+        <div class="info-cards">
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Insurance Co 1">
+                <h3>CareShield</h3>
+                <p>Comprehensive health insurance for families and individuals.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/1042/1042395.png" alt="Insurance Co 2">
+                <h3>HealthSecure</h3>
+                <p>Affordable plans with extensive hospital networks.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/969/969061.png" alt="Insurance Co 3">
+                <h3>MedicCare</h3>
+                <p>Quick claim processing with digital policy records.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/901/901152.png" alt="Insurance Co 4">
+                <h3>LifePlus</h3>
+                <p>Integrated wellness programs and 24/7 support.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-section">
+        <h2>Partnered Diagnostic Centers</h2>
+        <div class="info-cards">
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Diagnostic Center 1">
+                <h3>PathLab 360</h3>
+                <p>Fast and reliable blood & pathology tests.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/2761/2761011.png" alt="Diagnostic Center 2">
+                <h3>ScanWell Diagnostics</h3>
+                <p>Advanced imaging services at your fingertips.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/2985/2985150.png" alt="Diagnostic Center 3">
+                <h3>SmartCheck Labs</h3>
+                <p>Home sample pickup with instant result tracking.</p>
+            </div>
+            <div class="info-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/1150/1150842.png" alt="Diagnostic Center 4">
+                <h3>LabConnect</h3>
+                <p>Connected diagnostics integrated into your profile.</p>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

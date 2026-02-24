@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap">
+    <style>
+        :root {
+            --primary: #ddd5f3;
+            --primary-dark: #b9aedb;
+            --primary-light: #ebe7f8;
+            --secondary: #f5f3fd;
+            --accent: #9685cf;
+            --text-dark: #3a3a3a;
+            --text-light: #757575;
+            --white: #ffffff;
+            --background: #f8f7fc;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            --card-hover: 0 10px 25px rgba(221, 213, 243, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 20px 30px;
+            color: var(--text-dark);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: var(--primary-light);
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-links a:hover {
+            background-color: var(--accent);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 30px auto;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .doctor-profile {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--primary-light);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--primary-light);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-right: 20px;
+        }
+
+        .profile-info h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .doctor-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item {
+            margin-bottom: 15px;
+        }
+
+        .detail-item span {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .detail-item p {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .search-container {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--primary-light);
+            display: none;
+        }
+
+        .search-container.active {
+            display: block;
+        }
+
+        .search-container h2 {
+            color: var(--accent);
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            padding: 12px 15px;
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(150, 133, 207, 0.1);
+        }
+
+        .form-group select {
+            padding: 12px 15px;
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            background-color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(150, 133, 207, 0.1);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(150, 133, 207, 0.2);
+        }
+
+        .toggle-search-btn {
+            align-self: center;
+            margin-top: 10px;
+        }
+
+        #reports-container {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .report-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid var(--primary-light);
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover);
+        }
+
+        .report-header {
+            padding: 15px;
+            background-color: var(--primary-light);
+        }
+
+        .report-header h3 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .report-header p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .report-content {
+            padding: 15px;
+        }
+
+        .report-content img, 
+        .report-content iframe {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid var(--primary-light);
+        }
+
+        .report-content img {
+            max-height: 300px;
+            object-fit: contain;
+        }
+
+        .report-content iframe {
+            height: 300px;
+        }
+
+        .no-reports {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+            background-color: var(--white);
+            border-radius: 12px;
+            border: 1px dashed var(--primary-light);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading::after {
+            content: "...";
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+
+        @media (max-width: 768px) {
+            .doctor-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 10px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            #reports-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Doctor Dashboard</h1>
+        <div class="nav-links">
+            <a href="/logout">Logout</a>
+        </div>
+    </header>
+    
+    <div class="dashboard-container">
+        <div class="doctor-profile">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profile-initial">D</div>
+                <div class="profile-info">
+                    <h2 id="doctor-name">Dr. Loading...</h2>
+                    <p id="doctor-specialization">Specialization loading...</p>
+                </div>
+            </div>
+            
+            <div class="doctor-details">
+                <div class="detail-item">
+                    <span>Doctor ID</span>
+                    <p id="doctor-id">Loading...</p>
+                </div>
+                <div class="detail-item">
+                    <span>Email</span>
+                    <p id="doctor-email">Loading...</p>
+                </div>
+                <div class="detail-item">
+                    <span>Phone</span>
+                    <p id="doctor-phone">Loading...</p>
+                </div>
+            </div>
+            
+            <button class="btn toggle-search-btn" onclick="toggleSearchContainer()">Search Patient Reports</button>
+        </div>
+        
+        <div class="search-container" id="search-container">
+            <h2>Search Patient Reports</h2>
+            <form class="search-form" id="search-form">
+                <div class="form-group">
+                    <label for="patient-id">Patient ID</label>
+                    <input type="text" id="patient-id" name="patient-id" required placeholder="Enter patient's unique ID">
+                </div>
+                
+                <div class="form-group">
+                    <label for="report-category">Report Category</label>
+                    <select id="report-category" name="report-category">
+                        <option value="all">All Categories</option>
+                        <option value="Medical History">Medical History</option>
+                        <option value="Lab Report">Lab Reports</option>
+                        <option value="Prescription">Prescriptions</option>
+                        <option value="Blood Test Report">Blood Test Reports</option>
+                        <option value="Urine Test Report">Urine Test Reports</option>
+                        <option value="Imaging Report">Imaging Reports</option>
+                        <option value="ECG/Echo Report">ECG/Echo Reports</option>
+                        <option value="COVID/Flu Report">COVID-19/Flu Reports</option>
+                        <option value="Thyroid Function Test">Thyroid Function Tests</option>
+                        <option value="Liver Function Test">Liver Function Tests</option>
+                        <option value="Kidney Function Test">Kidney Function Tests</option>
+                        <option value="Lipid Profile">Lipid Profiles</option>
+                        <option value="Psychiatric Evaluation">Psychiatric Evaluations</option>
+                        <option value="Fitness/Medical Certificate">Fitness/Medical Certificates</option>
+                        <option value="Other Report">Other Reports</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Search Reports</button>
+            </form>
+            
+            <div class="loading" id="loading">Searching for reports</div>
+            
+            <div id="reports-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get doctor details on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchDoctorDetails();
+        });
+        
+        function fetchDoctorDetails() {
+            fetch('/api/doctor/details')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Not authenticated');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('doctor-name').textContent = `Dr. ${data.firstName} ${data.lastName}`;
+                    document.getElementById('doctor-specialization').textContent = data.specialization;
+                    document.getElementById('doctor-id').textContent = data.doctorId;
+                    document.getElementById('doctor-email').textContent = data.email;
+                    document.getElementById('doctor-phone').textContent = data.contactNumber;
+                    
+                    // Set profile initial
+                    const initial = data.firstName.charAt(0);
+                    document.getElementById('profile-initial').textContent = initial;
+                })
+                .catch(error => {
+                    console.error('Error fetching doctor details:', error);
+                    // Redirect to login if not authenticated
+                    if (error.message === 'Not authenticated') {
+                        window.location.href = '/login';
+                    }
+                });
+        }
+        
+        // Toggle search container visibility
+        function toggleSearchContainer() {
+            const container = document.getElementById('search-container');
+            container.classList.toggle('active');
+            
+            const button = document.querySelector('.toggle-search-btn');
+            if (container.classList.contains('active')) {
+                button.textContent = 'Hide Search';
+            } else {
+                button.textContent = 'Search Patient Reports';
+            }
+        }
+        
+        // Handle search form submission
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('patient-id').value.trim();
+            const category = document.getElementById('report-category').value;
+            
+            if (!patientId) {
+                alert('Please enter a patient ID');
+                return;
+            }
+            
+            searchPatientReports(patientId, category);
+        });
+        
+        // Search for patient reports
+        function searchPatientReports(patientId, category) {
+            const loading = document.getElementById('loading');
+            const reportsContainer = document.getElementById('reports-container');
+            
+            loading.style.display = 'block';
+            reportsContainer.innerHTML = '';
+            
+            fetch(`/api/patient/reports?patientId=${patientId}&category=${category}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch reports');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loading.style.display = 'none';
+                    
+                    if (data.reports.length === 0) {
+                        reportsContainer.innerHTML = '<div class="no-reports">No reports found for this patient.</div>';
+                        return;
+                    }
+                    
+                    displayReports(data.reports);
+                })
+                .catch(error => {
+                    console.error('Error fetching reports:', error);
+                    loading.style.display = 'none';
+                    reportsContainer.innerHTML = '<div class="no-reports">Error fetching reports. Please try again.</div>';
+                });
+        }
+        function viewReport(filename) {
+    window.open(`/uploads/${filename}`, '_blank');
+}
+
+function openPdf(filename) {
+    window.open(`/uploads/${filename}`, '_blank');
+}
+        
+        // Display reports in the container
+        function displayReports(reports) {
+            const reportsContainer = document.getElementById('reports-container');
+            reportsContainer.innerHTML = '';
+            
+            reports.forEach(report => {
+                const reportCard = document.createElement('div');
+                reportCard.classList.add('report-card');
+                
+                const fileExtension = report.fileName.split('.').pop().toLowerCase();
+                const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension);
+                const isPdf = fileExtension === 'pdf';
+                
+                const reportHeader = document.createElement('div');
+                reportHeader.classList.add('report-header');
+                reportHeader.innerHTML = `
+                    <h3>${report.category}</h3>
+                    <p>Uploaded: ${new Date(report.uploadedAt).toLocaleString()}</p>
+                `;
+                
+                const reportContent = document.createElement('div');
+                reportContent.classList.add('report-content');
+                
+                if (isImage) {
+                    reportContent.innerHTML = `
+                        <p>Filename: ${report.fileName}</p>
+                        <img src="/uploads/${report.filePath}" alt="${report.category}">
+                        <a href="/uploads/${report.filePath}" class="btn" style="display:block; margin-top:10px; text-align:center; text-decoration:none;" target="_blank">View Full Image</a>
+                    `;
+                } else if (isPdf) {
+                    reportContent.innerHTML = `
+                        <p>Filename: ${report.fileName}</p>
+                        <iframe src="/uploads/${report.filePath}" title="${report.category}"></iframe>
+                        <a href="/uploads/${report.filePath}" class="btn" style="display:block; margin-top:10px; text-align:center; text-decoration:none;" target="_blank">Open PDF</a>
+                    `;
+                } else {
+                    reportContent.innerHTML = `
+                        <p>Filename: ${report.fileName}</p>
+                        <p>File type: ${fileExtension.toUpperCase()}</p>
+                        <a href="/uploads/${report.filePath}" class="btn" style="display:block; margin-top:10px; text-align:center; text-decoration:none;" target="_blank">Download File</a>
+                    `;
+                }
+                
+                reportCard.appendChild(reportHeader);
+                reportCard.appendChild(reportContent);
+                reportsContainer.appendChild(reportCard);
+            });
+        }
+    </script>
+</body>
+</html>
