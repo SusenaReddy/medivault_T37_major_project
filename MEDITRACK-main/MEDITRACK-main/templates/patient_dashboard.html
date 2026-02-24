@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ddd5f3;
+            --primary-dark: #b9aedb;
+            --primary-light: #ebe7f8;
+            --secondary: #f5f3fd;
+            --accent: #9685cf;
+            --text-dark: #3a3a3a;
+            --text-light: #757575;
+            --white: #ffffff;
+            --background: #f8f7fc;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            --card-hover: 0 10px 25px rgba(221, 213, 243, 0.2);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-dark);
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-nav li:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-nav li.active {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-left: 4px solid var(--accent);
+        }
+
+        .sidebar-nav li i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--primary-light);
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin: 0;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-light);
+            color: var(--text-dark);
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        .logout-btn i {
+            margin-right: 8px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            margin: 0 0 5px 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .user-id {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            background-color: var(--white);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .report-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--primary-light);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .report-card:hover {
+            box-shadow: var(--card-hover);
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        .report-card h2 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .upload-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-dark);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .upload-btn:hover {
+            background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(150, 133, 207, 0.2);
+        }
+
+        .upload-btn:before {
+            content: "+";
+            margin-right: 8px;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .uploaded-file {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: var(--primary-light);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+        }
+
+        .uploaded-file i {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+
+        @media screen and (max-width: 992px) {
+            .reports-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px 0;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 15px;
+            }
+
+            .sidebar-nav li {
+                padding: 10px 15px;
+                white-space: nowrap;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a class="logo">MediPortal</a>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="active">
+                <a href="">
+                    <i class="fas fa-home"></i>
+                    <span>Patient Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/diagnostic_dashboard">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Diagnostic</span>
+                </a>
+            </li>
+            <li>
+                <a href="\insurer_dashboard">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Insurance Providers</span>
+                </a>
+            </li>
+            <li>
+                <a href="\profile_dashboar">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="\interface_dashboard" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        
+        <div class="welcome">
+            <h1>Welcome, {{ name }}!</h1>
+            <div class="user-id">User ID: {{ user_id }}</div>
+        </div>
+
+        
+        <div class="reports-grid">
+            <!-- Medical Reports Cards -->
+            <div class="report-card">
+                <h2>Medical History</h2>
+                <input type="file" id="medicalHistoryInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('medicalHistoryInput', 'Medical History')">Upload</button>
+                <div id="medicalHistoryFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h2>Lab Reports</h2>
+                <input type="file" id="labReportsInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('labReportsInput', 'Lab Report')">Upload</button>
+                <div id="labReportsFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h2>Prescriptions</h2>
+                <input type="file" id="prescriptionsInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('prescriptionsInput', 'Prescription')">Upload</button>
+                <div id="prescriptionsFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h2>Blood Test Report</h2>
+                <input type="file" id="bloodTestInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('bloodTestInput', 'Blood Test Report')">Upload</button>
+                <div id="bloodTestFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h2>Urine Test Report</h2>
+                <input type="file" id="urineTestInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('urineTestInput', 'Urine Test Report')">Upload</button>
+                <div id="urineTestFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h2>Imaging Reports</h2>
+                <input type="file" id="imagingInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('imagingInput', 'Imaging Report')">Upload</button>
+                <div id="imagingFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+           <div class="report-card">
+                <h2>ECG Reports</h2>
+                <input type="file" id="ecgInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('ecgInput', 'ECG Report')">Upload</button>
+                <div id="ecgFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+          <div class="report-card">
+                <h2>Covid-19/Flu Reports</h2>
+                <input type="file" id="covidInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('covidInput', 'Covid-19/Flu Report')">Upload</button>
+                <div id="covidFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+          
+
+            <div class="report-card">
+                <h2>Psychiatric Evaluation</h2>
+                <input type="file" id="psychInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('psychInput', 'Psychiatric Evaluation')">Upload</button>
+                <div id="psychFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h2>MRI Reports</h2>
+                <input type="file" id="mriInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('mriInput', 'MRI Report')">Upload</button>
+                <div id="mriFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+             <div class="report-card">
+                <h2>Fitness/Medical Certificates</h2>
+                <input type="file" id="fitnessInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('fitnessInput', 'Fitness Certificate')">Upload</button>
+                <div id="fitnessFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+
+          <div class="report-card">
+                <h2>Other Reports</h2>
+                <input type="file" id="otherInput" accept=".pdf,.jpg,.png,.jpeg" />
+                <button class="upload-btn" onclick="triggerFileUpload('otherInput', 'Other Report')">Upload</button>
+                <div id="otherFile" class="uploaded-file" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="file-name"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const userId = "{{ user_id }}";
+
+        function triggerFileUpload(inputId, category) {
+            const input = document.getElementById(inputId);
+            input.onchange = () => {
+                const file = input.files[0];
+                if (file) {
+                    // Display the file name immediately (before upload completes)
+                    const fileDisplayId = inputId.replace('Input', 'File');
+                    const fileDisplay = document.getElementById(fileDisplayId);
+                    const fileNameSpan = fileDisplay.querySelector('.file-name');
+                    
+                    fileNameSpan.textContent = file.name;
+                    fileDisplay.style.display = 'flex';
+                    
+                    // Then proceed with upload
+                    uploadReport(file, category, fileDisplayId);
+                }
+            };
+            input.click();
+        }
+
+        function uploadReport(file, category, fileDisplayId) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('patient_id', userId);
+            formData.append('category', category);
+
+            fetch('/upload_report', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(`${category} uploaded successfully!`, 'success');
+                    // The file name is already displayed, we just confirm the upload was successful
+                } else {
+                    showNotification(`Upload failed for ${category}.`, 'error');
+                    // Hide the file display if upload failed
+                    document.getElementById(fileDisplayId).style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                showNotification(`An error occurred while uploading ${category}.`, 'error');
+                // Hide the file display if upload errored
+                document.getElementById(fileDisplayId).style.display = 'none';
+            });
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '15px 25px';
+            notification.style.borderRadius = '8px';
+            notification.style.color = type === 'success' ? '#3a3a3a' : 'white';
+            notification.style.backgroundColor = type === 'success' ? '#ddd5f3' : '#e74c3c';
+            notification.style.boxShadow = '0 3px 15px rgba(0,0,0,0.2)';
+            notification.style.zIndex = '1000';
+            notification.style.transition = 'all 0.3s ease';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

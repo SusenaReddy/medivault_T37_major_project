@@ -1,0 +1,302 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ddd5f3; /* Match the background color of the image container */
+    margin: 0;
+    flex-direction: column;
+    align-items: center;
+}
+.header {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    position: fixed;
+    top: 0;
+    width: 99%;
+    z-index: 1000;
+}
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+}
+.nav-links a {
+    color: black;
+    text-decoration: none;
+    margin: 0 30px;
+    font-size: 20px;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+    background-color: #ddd5f3;
+    padding: 10px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-left h1 {
+    margin: 0;
+    color: #fff;
+}
+
+.navbar-right {
+    align-items: center;
+}
+
+.a-element {
+    color: black;
+    padding: 10px 15px;
+    text-decoration: none;
+}
+
+.a-element:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 150px;
+    padding-top: 200px;
+    height: calc(100vh - 85px); /* Adjusted for navbar height */
+}
+
+.image-container {
+    flex: 1;
+    background-color: #ddd5f3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: 60vb;
+}
+
+.image-container h2 {
+    margin-top: 20px;
+    font-size: 24px;
+}
+
+.image-container p {
+    font-size: 16px;
+    color: #666;
+    max-width: 400px;
+}
+
+.login-container {
+    flex: 1;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+    width: 80%;
+}
+
+.login-container input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #63e971da;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.login-container button:hover {
+    background-color: #63e971da;
+}
+
+.google-signin {
+    background-color: #db4437;
+}
+
+.google-signin:hover {
+    background-color: #c23321;
+}
+
+.login-container .links {
+    margin-top: 10px;
+}
+
+.login-container .links a {
+    display: block;
+    color: #007BFF;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.login-container .links a:hover {
+    text-decoration: underline;
+}
+
+.separator {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    line-height: 0.1em;
+    margin: 10px 0 20px;
+}
+
+.separator span {
+    background: #fff;
+    padding: 0 10px;
+    color: #999;
+}
+/* Dropdown CSS */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.signup-container {
+    flex: 1;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.signup-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.signup-container label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+    width: 100%;
+}
+
+.signup-container input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+}
+
+.signup-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #63e971da;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.signup-container button:hover {
+    background-color: #63e971da;
+}
+
+.google-signin {
+    background-color: #db4437;
+}
+
+.google-signin:hover {
+    background-color: #c23321;
+}
+
+.signup-container .links {
+    margin-top: 10px;
+}
+
+.signup-container .links a {
+    display: block;
+    color: #007BFF;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.signup-container .links a:hover {
+    text-decoration: underline;
+}
+
+.separator {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    line-height: 0.1em;
+    margin: 10px 0 20px;
+}
+
+.separator span {
+    background: #fff;
+    padding: 0 10px;
+    color: #999;
+}

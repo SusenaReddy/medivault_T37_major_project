@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - MediTrack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ddd5f3;
+            margin: 0;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: black;
+        }
+
+        .nav-links a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: black;
+            font-size: 18px;
+        }
+
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 150px;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #333;
+        }
+
+        .login-container label {
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .login-container input,
+        .login-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #63e971da;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-container button:hover {
+            background-color: #4bc45f;
+        }
+
+        .login-container .links {
+            margin-top: 15px;
+        }
+
+        .login-container .links a {
+            text-decoration: none;
+            color: #007BFF;
+            display: block;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>MediTrack</h1>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="login-container">
+            <h2>Login</h2>
+            
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+            
+            <form id="loginForm" action="/login" method="POST">
+                <div>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div>
+                    <label for="user_type">User Type</label>
+                    <select id="user_type" name="user_type" required>
+                        <option value="">Select user type</option>
+                        <option value="Patient">Patient</option>
+                        <option value="Doctor">Doctor</option>
+                        <option value="InsuranceProvider">Insurance Provider</option>
+                        <option value="DiagnosticCenter">Diagnostic Center</option>
+                    </select>
+                </div>
+
+                <button type="submit">Login</button>
+
+                <div class="links">
+                    <a href="/forgot-password">Forgot Password?</a>
+                    <a href="/signup">Don't have an account? Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const userType = document.getElementById('user_type').value;
+        
+        // Basic validation
+        if (!username || !password || !userType) {
+            event.preventDefault();
+            alert("Please fill in all fields.");
+            return;
+        }
+        
+        // Form will submit if validation passes
+    });
+    </script>
+
+</body>
+</html>

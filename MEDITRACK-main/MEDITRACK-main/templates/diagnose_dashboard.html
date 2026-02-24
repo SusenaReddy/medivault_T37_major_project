@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Center Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ddd5f3;
+            --primary-dark: #b9aedb;
+            --primary-light: #ebe7f8;
+            --accent: #9685cf;
+            --text-dark: #3a3a3a;
+            --text-light: #757575;
+            --white: #ffffff;
+            --background: #f8f7fc;
+            --card-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            --sidebar-width: 280px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .logo { font-size: 1.5rem; font-weight: 600; color: var(--text-dark); text-decoration: none; display: block; }
+        .sidebar-nav { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li { padding: 12px 25px; display: flex; align-items: center; transition: background 0.3s; }
+        .sidebar-nav li.active { background: rgba(255,255,255,0.3); border-left: 4px solid var(--accent); }
+        .sidebar-nav li:hover { background: rgba(255,255,255,0.2); }
+        .sidebar-nav a { color: var(--text-dark); text-decoration: none; display: flex; align-items: center; width: 100%; }
+        .sidebar-nav li i { margin-right: 12px; width: 24px; text-align: center; }
+
+        /* ── Main ── */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+
+        .welcome { margin-bottom: 30px; }
+        .welcome h1 { margin: 0 0 4px; font-size: 1.8rem; font-weight: 600; color: var(--accent); }
+        .welcome .subtitle { font-size: 0.95rem; color: var(--text-light); }
+
+        /* ── Cards ── */
+        .info-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+        }
+        .info-card h3 { margin-top: 0; color: var(--accent); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .detail-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .detail-item { flex: 1; min-width: 160px; }
+        .detail-item label { display: block; font-size: 0.78rem; color: var(--text-light); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .detail-item span { font-weight: 500; font-size: 0.95rem; }
+
+        /* ── Search ── */
+        .search-row { display: flex; gap: 12px; margin-bottom: 25px; align-items: center; }
+        .search-bar {
+            flex: 1; padding: 12px 18px;
+            border: 1.5px solid var(--primary-light); border-radius: 8px;
+            font-size: 0.95rem; font-family: inherit;
+            background: var(--white); transition: border 0.2s;
+        }
+        .search-bar:focus { outline: none; border-color: var(--accent); }
+
+        .btn {
+            padding: 12px 22px; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 0.95rem; font-weight: 500;
+            font-family: inherit; transition: all 0.25s; display: inline-flex;
+            align-items: center; gap: 8px; white-space: nowrap;
+        }
+        .btn-search { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--text-dark); }
+        .btn-search:hover { background: linear-gradient(135deg, var(--accent), var(--primary-dark)); color: var(--white); transform: translateY(-1px); }
+        .btn-add { background: linear-gradient(135deg, #6ee47a, #4bc45f); color: var(--white); display: none; }
+        .btn-add:hover { background: linear-gradient(135deg, #4bc45f, #38a349); transform: translateY(-1px); }
+
+        /* ── Patient Info ── */
+        #patientInfo { display: none; }
+
+        /* ── Reports Grid ── */
+        .reports-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+
+        .report-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--primary-light);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .report-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(221,213,243,0.3); border-color: var(--primary); }
+        .report-card h2 { color: var(--accent); font-size: 1rem; margin: 0 0 14px; font-weight: 500; }
+
+        input[type="file"] { display: none; }
+
+        .upload-btn {
+            width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-dark); padding: 10px 14px; border: none;
+            border-radius: 8px; cursor: pointer; font-size: 0.88rem;
+            font-weight: 500; font-family: inherit; transition: all 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .upload-btn:hover { background: linear-gradient(135deg, var(--accent), var(--primary-dark)); color: var(--white); transform: translateY(-1px); }
+
+        .file-badge {
+            margin-top: 10px; padding: 7px 10px;
+            background: var(--primary-light); border-radius: 6px;
+            font-size: 0.8rem; word-break: break-all;
+            display: none; align-items: center; gap: 8px;
+        }
+        .file-badge i { color: var(--accent); flex-shrink: 0; }
+        .file-badge .status { margin-left: auto; font-size: 0.75rem; }
+        .status.uploading { color: #e09b2d; }
+        .status.done { color: #38a349; }
+        .status.error { color: #e74c3c; }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 13px 22px; border-radius: 8px;
+            font-size: 0.9rem; font-family: inherit;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+            z-index: 9999; opacity: 1; transition: opacity 0.3s;
+        }
+        .toast.success { background: #ddd5f3; color: var(--text-dark); }
+        .toast.error { background: #e74c3c; color: #fff; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .sidebar-nav { display: flex; overflow-x: auto; padding: 0 12px; }
+            .sidebar-nav li { white-space: nowrap; }
+            .main-content { padding: 18px; }
+            .search-row { flex-direction: column; }
+            .search-bar, .btn { width: 100%; }
+            .reports-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <a class="logo">MediPortal</a>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="active">
+            <a href="/diagnostic_dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="/logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+
+    <!-- Welcome -->
+    <div class="welcome">
+        <h1>Welcome, {{ centername }}</h1>
+        <div class="subtitle">Diagnostic Center ID: {{ centerid }}</div>
+    </div>
+
+    <!-- Center Info -->
+    <div class="info-card">
+        <h3>Center Information</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Center ID</label>
+                <span>{{ centerid }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Address</label>
+                <span>{{ centeraddress }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Contact</label>
+                <span>{{ centercontact }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Email</label>
+                <span>{{ centeremail }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-row">
+        <input type="text" class="search-bar" id="patientSearch"
+               placeholder="Enter Patient ID to search..." />
+        <button class="btn btn-search" id="searchBtn">
+            <i class="fas fa-search"></i> Search
+        </button>
+        <button class="btn btn-add" id="addBtn">
+            <i class="fas fa-plus"></i> Add Reports
+        </button>
+    </div>
+
+    <!-- Patient Info (shown after successful search) -->
+    <div class="info-card" id="patientInfo">
+        <h3>Patient Information</h3>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label>Patient Name</label>
+                <span id="patientName">—</span>
+            </div>
+            <div class="detail-item">
+                <label>Patient ID</label>
+                <span id="patientId">—</span>
+            </div>
+            <div class="detail-item">
+                <label>Age</label>
+                <span id="patientAge">—</span>
+            </div>
+            <div class="detail-item">
+                <label>Gender</label>
+                <span id="patientGender">—</span>
+            </div>
+            <div class="detail-item">
+                <label>Contact</label>
+                <span id="patientContact">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Cards Grid (shown after clicking Add Reports) -->
+    <div class="reports-grid" id="reportsGrid">
+
+        {% set report_types = [
+            ('medicalHistory',  'Medical History'),
+            ('labReports',      'Lab Reports'),
+            ('bloodTest',       'Blood Test Report'),
+            ('urineTest',       'Urine Test Report'),
+            ('imaging',         'Imaging Reports'),
+            ('ecg',             'ECG Reports'),
+            ('mri',             'MRI Reports'),
+            ('xray',            'X-ray Reports'),
+            ('other',           'Other Reports')
+        ] %}
+
+        {% for key, label in report_types %}
+        <div class="report-card">
+            <h2>{{ label }}</h2>
+            <input type="file" id="{{ key }}Input" accept=".pdf,.jpg,.png,.jpeg" />
+            <button class="upload-btn"
+                    onclick="triggerUpload('{{ key }}Input', '{{ label }}', '{{ key }}Badge')">
+                <i class="fas fa-upload"></i> Upload
+            </button>
+            <div class="file-badge" id="{{ key }}Badge">
+                <i class="fas fa-file-alt"></i>
+                <span class="file-name"></span>
+                <span class="status uploading"></span>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div><!-- /main-content -->
+
+<script>
+    // Injected safely from Flask
+    const CENTER_ID = "{{DiagnosticCenterID}}";
+    let currentPatientId = null;
+    let patientValidated = false;
+
+    // ── Search ────────────────────────────────────────
+    document.getElementById('searchBtn').addEventListener('click', doSearch);
+    document.getElementById('patientSearch').addEventListener('keydown', e => {
+        if (e.key === 'Enter') doSearch();
+    });
+
+    function doSearch() {
+        const pid = document.getElementById('patientSearch').value.trim();
+        if (!pid) { toast('Please enter a Patient ID', 'error'); return; }
+        searchPatient(pid);
+    }
+
+    function searchPatient(patientId) {
+        // Reset state
+        patientValidated = false;
+        document.getElementById('addBtn').style.display = 'none';
+        document.getElementById('reportsGrid').style.display = 'none';
+        document.getElementById('patientInfo').style.display = 'none';
+
+        fetch(`/api/patients/${encodeURIComponent(patientId)}`)
+            .then(res => {
+                if (!res.ok) throw new Error('Patient not found');
+                return res.json();
+            })
+            .then(data => {
+                // Populate patient card
+                document.getElementById('patientName').textContent    = data.name;
+                document.getElementById('patientId').textContent      = data.id;
+                document.getElementById('patientAge').textContent     = data.age;
+                document.getElementById('patientGender').textContent  = data.gender;
+                document.getElementById('patientContact').textContent = data.contact;
+
+                document.getElementById('patientInfo').style.display = 'block';
+                document.getElementById('addBtn').style.display      = 'inline-flex';
+
+                currentPatientId = patientId;
+                patientValidated = true;
+
+                toast('Patient found! Click "Add Reports" to upload.', 'success');
+            })
+            .catch(() => toast('Patient not found. Check the ID and try again.', 'error'));
+    }
+
+    // ── Add Reports button ────────────────────────────
+    document.getElementById('addBtn').addEventListener('click', () => {
+        if (!patientValidated) { toast('Search for a patient first.', 'error'); return; }
+        document.getElementById('reportsGrid').style.display = 'grid';
+        toast('Select a report category and upload the file.', 'success');
+    });
+
+    // ── File Upload ───────────────────────────────────
+    function triggerUpload(inputId, category, badgeId) {
+        if (!patientValidated) { toast('Search for a patient first.', 'error'); return; }
+
+        const input = document.getElementById(inputId);
+        // Clone to remove stale listeners
+        const fresh = input.cloneNode(true);
+        input.parentNode.replaceChild(fresh, input);
+
+        fresh.onchange = () => {
+            const file = fresh.files[0];
+            if (!file) return;
+            showBadge(badgeId, file.name, 'uploading', 'Uploading…');
+            uploadFile(file, category, badgeId);
+        };
+        fresh.click();
+    }
+
+    function uploadFile(file, category, badgeId) {
+        const fd = new FormData();
+        fd.append('file',               file);
+        fd.append('patientid',          currentPatientId);
+        fd.append('diagnosticcenterid', CENTER_ID);
+        fd.append('category',           category);
+        fd.append('reportdate',         new Date().toISOString().split('T')[0]);
+
+        fetch('/api/uploadreport', { method: 'POST', body: fd })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showBadge(badgeId, file.name, 'done', '✓ Saved');
+                    toast(`${category} uploaded successfully!`, 'success');
+                } else {
+                    throw new Error(data.message || 'Upload failed');
+                }
+            })
+            .catch(err => {
+                showBadge(badgeId, file.name, 'error', '✗ Failed');
+                toast(`Upload failed: ${err.message}`, 'error');
+            });
+    }
+
+    function showBadge(badgeId, filename, statusClass, statusText) {
+        const badge = document.getElementById(badgeId);
+        badge.querySelector('.file-name').textContent = filename;
+        const s = badge.querySelector('.status');
+        s.className = `status ${statusClass}`;
+        s.textContent = statusText;
+        badge.style.display = 'flex';
+    }
+
+    // ── Toast ─────────────────────────────────────────
+    function toast(msg, type = 'success') {
+        const el = document.createElement('div');
+        el.className = `toast ${type}`;
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 350); }, 3000);
+    }
+</script>
+</body>
+</html>

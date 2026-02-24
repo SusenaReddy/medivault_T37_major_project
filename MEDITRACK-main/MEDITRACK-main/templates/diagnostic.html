@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diagnostic Centers</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    .navbar-custom {
+      background-color: #d6c9f0;
+    }
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link {
+      color: #4b2e83;
+    }
+    .navbar-custom .nav-link.active {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">MediTrack</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="patient.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="interface.html">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="py-5 bg-light text-center">
+    <div class="container">
+      <h1 class="fw-bold">Explore Top Diagnostic Centers</h1>
+      <p class="lead">Find and book tests at reliable centers near you</p>
+    </div>
+  </header>
+
+  <!-- Diagnostic Centers -->
+  <main class="container my-5">
+    <div class="row g-4">
+      <!-- Diagnostic Center 1 -->
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h5 class="mb-1">City Lab Diagnostics</h5>
+          <p class="text-muted">General Lab Tests</p>
+          <p><i class="bi bi-geo-alt-fill"></i> 101 Health Blvd, City</p>
+          <p><i class="bi bi-telephone-fill"></i> (555) 111-2222</p>
+          <p><strong>Timings:</strong> Mon - Sat, 8am to 6pm</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal1">View Profile</button>
+            <a href="book_test.html" class="btn btn-primary">Book Test</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 1 -->
+      <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal1Label">City Lab Diagnostics</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Address:</strong> 101 Health Blvd, City</p>
+              <p><strong>Phone:</strong> (555) 111-2222</p>
+              <p><strong>Email:</strong> contact@citylab.com</p>
+              <p><strong>Tests Offered:</strong> Blood Tests, Urinalysis, Glucose Testing</p>
+              <p><strong>Facilities:</strong> Home Collection, Online Reports, Emergency Testing</p>
+              <p><strong>Timings:</strong> Mon - Sat, 8am to 6pm</p>
+              <p><strong>Rating:</strong> 4.5/5 (Based on 320 reviews)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnostic Center 2 -->
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h5 class="mb-1">Wellness Path Labs</h5>
+          <p class="text-muted">Full Body Checkups</p>
+          <p><i class="bi bi-geo-alt-fill"></i> 22 Greenway Road, Metro City</p>
+          <p><i class="bi bi-telephone-fill"></i> (555) 333-4444</p>
+          <p><strong>Timings:</strong> Mon - Sun, 7am to 9pm</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal2">View Profile</button>
+            <a href="book_test.html" class="btn btn-primary">Book Test</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 2 -->
+      <div class="modal fade" id="modal2" tabindex="-1" aria-labelledby="modal2Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal2Label">Wellness Path Labs</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Address:</strong> 22 Greenway Road, Metro City</p>
+              <p><strong>Phone:</strong> (555) 333-4444</p>
+              <p><strong>Email:</strong> info@wellnesspath.com</p>
+              <p><strong>Tests Offered:</strong> Full Body, Liver Function, Thyroid Profile</p>
+              <p><strong>Facilities:</strong> Home Visit, Diet Consultation, 24/7 Support</p>
+              <p><strong>Timings:</strong> Mon - Sun, 7am to 9pm</p>
+              <p><strong>Rating:</strong> 4.8/5 (Based on 410 reviews)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnostic Center 3 -->
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h5 class="mb-1">Precision Health Lab</h5>
+          <p class="text-muted">Specialty Diagnostics</p>
+          <p><i class="bi bi-geo-alt-fill"></i> 88 Wellness St, Downtown</p>
+          <p><i class="bi bi-telephone-fill"></i> (555) 666-7777</p>
+          <p><strong>Timings:</strong> Mon - Fri, 9am to 5pm</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal3">View Profile</button>
+            <a href="book_test.html" class="btn btn-primary">Book Test</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 3 -->
+      <div class="modal fade" id="modal3" tabindex="-1" aria-labelledby="modal3Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal3Label">Precision Health Lab</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Address:</strong> 88 Wellness St, Downtown</p>
+              <p><strong>Phone:</strong> (555) 666-7777</p>
+              <p><strong>Email:</strong> support@precisionlab.com</p>
+              <p><strong>Tests Offered:</strong> Genetic Testing, Hormone Analysis, Allergy Tests</p>
+              <p><strong>Facilities:</strong> Expert Consultations, Insurance Support</p>
+              <p><strong>Timings:</strong> Mon - Fri, 9am to 5pm</p>
+              <p><strong>Rating:</strong> 4.6/5 (Based on 275 reviews)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnostic Center 4 -->
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h5 class="mb-1">CarePoint Diagnostics</h5>
+          <p class="text-muted">Pathology & Radiology</p>
+          <p><i class="bi bi-geo-alt-fill"></i> 45 MedTech Park, Suburbia</p>
+          <p><i class="bi bi-telephone-fill"></i> (555) 888-9999</p>
+          <p><strong>Timings:</strong> Tue - Sun, 8am to 8pm</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal4">View Profile</button>
+            <a href="book_test.html" class="btn btn-primary">Book Test</a>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 4 -->
+      <div class="modal fade" id="modal4" tabindex="-1" aria-labelledby="modal4Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal4Label">CarePoint Diagnostics</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Address:</strong> 45 MedTech Park, Suburbia</p>
+              <p><strong>Phone:</strong> (555) 888-9999</p>
+              <p><strong>Email:</strong> hello@carepointlabs.com</p>
+              <p><strong>Tests Offered:</strong> MRI, CT Scan, Pathology Tests</p>
+              <p><strong>Facilities:</strong> Digital Imaging, Fast Reporting, Appointment Booking</p>
+              <p><strong>Timings:</strong> Tue - Sun, 8am to 8pm</p>
+              <p><strong>Rating:</strong> 4.7/5 (Based on 360 reviews)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-4 bg-light text-muted">
+    <p class="mb-0">&copy; 2025 MediTrack. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
