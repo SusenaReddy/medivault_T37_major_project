@@ -285,7 +285,22 @@
         </div>
         {% endfor %}
 
-    </div>
+    </div><table border="1" width="100%">
+<thead>
+<tr>
+<th>Patient</th>
+<th>patientID</th>
+<th>Test</th>
+<th>Date</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="bookingTableBody">
+</tbody>
+
+</table>
 </div><!-- /main-content -->
 
 <script>
@@ -403,6 +418,145 @@
         document.body.appendChild(el);
         setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 350); }, 3000);
     }
+    // 🔥 Load bookings on page load
+document.addEventListener('DOMContentLoaded', loadBookings);
+
+
+// 🟢 Fetch and display bookings
+function loadBookings() {
+
+    fetch('/api/testbookings')
+    .then(res => res.json())
+    .then(data => {
+
+        const table = document.getElementById('bookingTableBody');
+        table.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            table.innerHTML = `<tr><td colspan="5">No bookings found</td></tr>`;
+            return;
+        }
+
+        data.forEach(b => {
+
+            let actionButtons = '';
+
+            // ✅ Show buttons only if Pending
+            if (b.BookingStatus === 'Pending') {
+                actionButtons = `
+                    <button class="accept-btn"
+                        onclick="updateStatus(${b.BookingID}, 'Accepted', this)">
+                        Accept
+                    </button>
+
+                    <button class="reject-btn"
+                        onclick="updateStatus(${b.BookingID}, 'Rejected', this)">
+                        Reject
+                    </button>
+                `;
+            } else {
+                actionButtons = `<span class="no-action">No actions</span>`;
+            }
+
+            table.innerHTML += `
+            <tr>
+                <td>${b.PatientName}</td>
+                <td>${b.PatientID}</td>
+                <td>${b.TestType}</td>
+                <td>${b.TestDate}</td>
+
+                <td id="status-${b.BookingID}" 
+                    style="color:${getStatusColor(b.BookingStatus)};
+                           font-weight:bold;">
+                    ${b.BookingStatus}
+                </td>
+
+                <td id="action-${b.BookingID}">
+                    ${actionButtons}
+                </td>
+            </tr>`;
+        });
+    })
+    .catch(err => {
+        console.error("Error loading bookings:", err);
+    });
+}
+
+
+// 🔵 Update booking status
+function updateStatus(id, status, btn) {
+
+    // 🔥 Disable clicked buttons immediately
+    const actionCell = document.getElementById(`action-${id}`);
+    actionCell.innerHTML = `<span style="color:gray;">Updating...</span>`;
+
+    fetch('/api/update_booking_status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            booking_id: id,
+            status: status
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.success) {
+
+            // ✅ Update status text
+            const statusCell = document.getElementById(`status-${id}`);
+            statusCell.innerText = status;
+            statusCell.style.color = getStatusColor(status);
+
+            // ✅ Remove buttons permanently
+            actionCell.innerHTML =
+                `<span style="color:${getStatusColor(status)};
+                              font-weight:bold;">
+                    ${status} ✔
+                 </span>`;
+
+            showToast(`Booking ${status}`);
+        } else {
+            actionCell.innerHTML = `<span style="color:red;">Failed</span>`;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        actionCell.innerHTML = `<span style="color:red;">Error</span>`;
+    });
+}
+
+
+// 🎨 Status color helper
+function getStatusColor(status) {
+    if (status === 'Accepted') return 'green';
+    if (status === 'Rejected') return 'red';
+    return 'orange'; // Pending
+}
+
+
+// 🔔 Toast notification (optional but nice UX)
+function showToast(message) {
+
+    const toast = document.createElement('div');
+    toast.innerText = message;
+
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.right = '20px';
+    toast.style.background = '#333';
+    toast.style.color = '#fff';
+    toast.style.padding = '10px 20px';
+    toast.style.borderRadius = '8px';
+    toast.style.fontSize = '14px';
+    toast.style.zIndex = '9999';
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 2000);
+}
 </script>
 </body>
 </html>

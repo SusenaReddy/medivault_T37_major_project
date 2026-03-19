@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 import os
 import datetime
 import json
-
+from datetime import datetime
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # for session security
 
@@ -107,17 +107,28 @@ def init_db():
         conn.commit()
         cursor.execute('''
     CREATE TABLE IF NOT EXISTS InsuranceRequests (
-        RequestID INTEGER PRIMARY KEY AUTOINCREMENT,
-        PatientID TEXT NOT NULL,
-        ProviderID INTEGER,
-        RequestType VARCHAR(255),
-        Amount REAL,
-        RequestDate DATE DEFAULT CURRENT_DATE,
-        Status VARCHAR(50) DEFAULT 'Pending',
-        Notes TEXT,
-        FOREIGN KEY (PatientID) REFERENCES Patients(PatientID)
+    RequestID INTEGER PRIMARY KEY AUTOINCREMENT,
+    PatientID INTEGER,
+    ProviderID INTEGER,
+    ClaimAmount REAL,
+    Reason TEXT,
+    Status TEXT DEFAULT 'Pending'
     )
 ''')
+        conn.commit()
+        conn.execute("""
+    CREATE TABLE IF NOT EXISTS TestBookings (
+        BookingID INTEGER PRIMARY KEY AUTOINCREMENT,
+        PatientID INTEGER,
+        DiagnosticCenterID INTEGER,
+        TestType TEXT,
+        TestDate TEXT,
+        BookingStatus TEXT DEFAULT 'Pending'
+    )
+    """)
+
+    conn.commit()
+    conn.close()
         
 
 # ----- Routes -----
@@ -268,6 +279,147 @@ def patient_dashboard():
         return render_template('patient_dashboard.html', name=user['name'], user_id=user['user_id'])
     else:
         return "User not found", 404
+@app.route('/diagnostic_centers')
+def diagnostic_centers():
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    conn = get_db_connection()
+
+    centers = conn.execute(
+        "SELECT * FROM DiagnosticCenters"
+    ).fetchall()
+
+    conn.close()
+
+    return render_template("diagnostic_centers.html", centers=centers)
+@app.route('/book_test/<int:center_id>', methods=['GET','POST'])
+def book_test(center_id):
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    conn = get_db_connection()
+
+    # ✅ Get actual PatientID from Patients table
+    patient = conn.execute(
+        "SELECT PatientID FROM Patients WHERE UserID = ?",
+        (session['user_id'],)
+    ).fetchone()
+
+    if not patient:
+        conn.close()
+        return "Patient not found"
+
+    patient_id = patient['PatientID']  # ✅ CORRECT
+
+    if request.method == 'POST':
+
+        test_type = request.form['test_type']
+        date = request.form['date']
+
+        conn.execute(
+            """
+            INSERT INTO TestBookings
+            (PatientID, DiagnosticCenterID, TestType, TestDate)
+            VALUES (?, ?, ?, ?)
+            """,
+            (patient_id, center_id, test_type, date)  # ✅ FIXED
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/patient_dashboard')
+
+    center = conn.execute(
+        "SELECT * FROM DiagnosticCenters WHERE DiagnosticCenterID = ?",
+        (center_id,)
+    ).fetchone()
+
+    conn.close()
+
+    return render_template("book_test.html", center=center)
+
+@app.route('/insurance_providers')
+def insurance_providers():
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    conn = get_db_connection()
+
+    providers = conn.execute(
+        "SELECT * FROM InsuranceProviders"
+    ).fetchall()
+
+    conn.close()
+
+    return render_template("insurance_providers.html", providers=providers)
+@app.route('/claim_insurance/<int:provider_id>', methods=['GET','POST'])
+def claim_insurance(provider_id):
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    conn = get_db_connection()
+
+    # Get PatientID from Patients table using UserID
+    patient = conn.execute(
+        "SELECT PatientID FROM Patients WHERE UserID = ?",
+        (session['user_id'],)
+    ).fetchone()
+
+    if not patient:
+        conn.close()
+        return "Patient record not found"
+
+    patient_id = patient['PatientID']   # ✅ Actual PatientID
+
+    # Fetch insurance provider
+    provider = conn.execute(
+        "SELECT * FROM InsuranceProviders WHERE InsuranceProviderID = ?",
+        (provider_id,)
+    ).fetchone()
+
+    if request.method == 'POST':
+
+        hospital = request.form['hospital']
+        treatment_date = request.form['treatment_date']
+        amount = request.form['amount']
+        reason = request.form['reason']
+
+        conn.execute("""
+        INSERT INTO InsuranceRequests
+        (PatientID, ProviderID, ClaimAmount, Reason)
+        VALUES (?, ?, ?, ?)
+        """, (patient_id, provider_id, amount, reason))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/patient_dashboard')
+
+    conn.close()
+
+    return render_template("claim.html", provider=provider)
+@app.route('/profile_dashboard')
+def profile_dashboard():
+
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT * FROM Users WHERE UserID=?",
+        (session['user_id'],)
+    ).fetchone()
+
+    conn.close()
+
+    return render_template("profile.html", user=user)
 # ─────────────────────────────────────────────────────────────────────────────
 # REPLACE THESE 3 ROUTES IN YOUR app.py
 # ─────────────────────────────────────────────────────────────────────────────
@@ -301,7 +453,7 @@ def diagnostic_dashboard():
     return render_template('diagnose_dashboard.html',
         userid        = user['UserID'],
         centername    = user['Username'],
-        centerid      = user['UserID'],
+        centerid      = user['RelatedID'],
         centeraddress = (center['Address']       if center else 'N/A'),
         centercontact = (center['ContactNumber'] if center else 'N/A'),
         centeremail   = (user['Email']           or 'N/A')
@@ -390,133 +542,244 @@ def api_upload_report():
     conn.close()
 
     return jsonify({'success': True, 'message': f'{category} uploaded successfully'})
+# ─────────────────────────────
+# GET BOOKINGS
+# ─────────────────────────────
+@app.route('/api/testbookings', methods=['GET'])
+def get_test_bookings():
+
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT RelatedID, UserType FROM Users WHERE UserID = ?",
+        (session['user_id'],)
+    ).fetchone()
+
+    if not user or user['UserType'] != 'DiagnosticCenter':
+        conn.close()
+        return jsonify({'error': 'Access denied'}), 403
+
+    center_id = user['RelatedID']
+
+    bookings = conn.execute('''
+        SELECT tb.BookingID, tb.PatientID, tb.TestType, tb.TestDate, tb.BookingStatus,
+               p.FirstName || ' ' || p.LastName AS PatientName
+        FROM TestBookings tb
+        JOIN Patients p ON tb.PatientID = p.PatientID
+        WHERE tb.DiagnosticCenterID = ?
+        ORDER BY tb.TestDate DESC
+    ''', (center_id,)).fetchall()
+
+    conn.close()
+
+    return jsonify([dict(b) for b in bookings])
+
+# ─────────────────────────────
+# UPDATE STATUS
+# ─────────────────────────────
+@app.route('/api/update_booking_status', methods=['POST'])
+def update_booking_status():
+
+    if 'user_id' not in session:
+        return jsonify({'success': False}), 401
+
+    data = request.get_json()
+    booking_id = data.get('booking_id')
+    status = data.get('status')
+
+    if status not in ['Accepted', 'Rejected']:
+        return jsonify({'success': False}), 400
+
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT RelatedID FROM Users WHERE UserID=?",
+        (session['user_id'],)
+    ).fetchone()
+
+    center_id = user['RelatedID']
+
+    conn.execute('''
+        UPDATE TestBookings
+        SET BookingStatus = ?
+        WHERE BookingID = ? AND DiagnosticCenterID = ?
+    ''', (status, booking_id, center_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'success': True})
+
+
+# ===============================
+# INSURANCE DASHBOARD
+# ===============================
 @app.route('/insurer_dashboard')
 def insurer_dashboard():
-    if 'user_id' not in session or session['user_type'] != 'Insurer':
+    if 'user_id' not in session or session['user_type'] != 'InsuranceProvider':
         return redirect('/login')
 
     conn = get_db_connection()
 
-    # Fetch from Users table first (always works)
     user = conn.execute(
         'SELECT * FROM Users WHERE UserID = ?',
         (session['user_id'],)
     ).fetchone()
 
-    # Try to get provider details from InsuranceProviders by matching Email
-    provider = None
-    if user and user['Email']:
-        provider = conn.execute(
-            'SELECT * FROM InsuranceProviders WHERE Email = ?',
-            (user['Email'],)
-        ).fetchone()
+    provider = conn.execute(
+        'SELECT * FROM InsuranceProviders WHERE InsuranceProviderID = ?',
+        (user['RelatedID'],)
+    ).fetchone()
 
     conn.close()
 
-    if not user:
-        return redirect('/login')
-
     return render_template('insurance_dashboard.html',
-        providerid      = provider['InsuranceProviderID'] if provider else user['UserID'],
-        providername    = provider['ProviderName']        if provider else user['Username'],
-        providercontact = provider['ContactNumber']       if provider else 'N/A',
-        provideremail   = user['Email']                   or 'N/A',
-        provideraddress = provider['Address']             if provider else 'N/A'
+        providerid      = provider['InsuranceProviderID'],
+        providername    = provider['ProviderName'],
+        providercontact = provider['ContactNumber'],
+        provideremail   = provider['Email'],
+        provideraddress = provider['Address']
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 4. ADD THESE 3 NEW API ROUTES
-# ─────────────────────────────────────────────────────────────────────────────
-
-# ─── API: Get patient info (for insurer search) ───────────────────────────────
-@app.route('/api/insurer/patient/<patient_id>', methods=['GET'])
+# ===============================
+# GET PATIENT
+# ===============================
+@app.route('/api/insurer/patient/<patient_id>')
 def insurer_get_patient(patient_id):
-    if 'user_id' not in session or session['user_type'] != 'Insurer':
+
+    if 'user_id' not in session or session['user_type'] != 'InsuranceProvider':
         return jsonify({'error': 'Unauthorized'}), 401
 
     conn = get_db_connection()
+
     patient = conn.execute('''
         SELECT PatientID,
-               FirstName || " " || LastName AS name,
-               CAST((julianday("now") - julianday(DateOfBirth)) / 365.25 AS INTEGER) AS age,
+               FirstName || ' ' || LastName AS name,
                Gender,
                PhoneNumber
         FROM Patients
         WHERE PatientID = ?
     ''', (patient_id,)).fetchone()
+
     conn.close()
 
     if not patient:
         return jsonify({'error': 'Patient not found'}), 404
 
-    return jsonify({
-        'id':      patient['PatientID'],
-        'name':    patient['name'],
-        'age':     patient['age'],
-        'gender':  patient['Gender'],
-        'contact': patient['PhoneNumber'] or 'N/A'
-    })
+    return jsonify(dict(patient))
 
 
-# ─── API: Get insurance requests for a patient ────────────────────────────────
-@app.route('/api/insurer/requests/<patient_id>', methods=['GET'])
+# ===============================
+# GET INSURANCE REQUESTS
+# ===============================
+@app.route('/api/insurer/requests/<patient_id>')
 def insurer_get_requests(patient_id):
-    if 'user_id' not in session or session['user_type'] != 'Insurer':
+
+    if 'user_id' not in session or session['user_type'] != 'InsuranceProvider':
         return jsonify({'error': 'Unauthorized'}), 401
 
     conn = get_db_connection()
 
-    # Verify patient exists
-    patient = conn.execute(
-        'SELECT PatientID FROM Patients WHERE PatientID = ?', (patient_id,)
+    user = conn.execute(
+        "SELECT RelatedID FROM Users WHERE UserID=?",
+        (session['user_id'],)
     ).fetchone()
 
-    if not patient:
-        conn.close()
-        return jsonify({'error': 'Patient not found'}), 404
+    provider_id = user['RelatedID']
 
     requests = conn.execute('''
-        SELECT RequestID, PatientID, ProviderID, RequestType,
-               Amount, RequestDate, Status, Notes
+        SELECT *
         FROM InsuranceRequests
-        WHERE PatientID = ?
-        ORDER BY RequestDate DESC
-    ''', (patient_id,)).fetchall()
+        WHERE PatientID = ? AND ProviderID = ?
+    ''', (patient_id, provider_id)).fetchall()
+
     conn.close()
 
     return jsonify({'requests': [dict(r) for r in requests]})
 
 
-# ─── API: Get medical reports for a patient (insurer view) ───────────────────
-@app.route('/api/insurer/reports/<patient_id>', methods=['GET'])
+# ===============================
+# UPDATE STATUS
+# ===============================
+@app.route('/api/update_insurance_status', methods=['POST'])
+def update_insurance_status():
+
+    if 'user_id' not in session or session['user_type'] != 'InsuranceProvider':
+        return jsonify({'success': False}), 401
+
+    data = request.get_json()
+
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT RelatedID FROM Users WHERE UserID=?",
+        (session['user_id'],)
+    ).fetchone()
+
+    provider_id = user['RelatedID']
+
+    conn.execute('''
+        UPDATE InsuranceRequests
+        SET Status = ?
+        WHERE RequestID = ? AND ProviderID = ?
+    ''', (data['status'], data['request_id'], provider_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'success': True})
+# ===============================
+# GET REPORTS
+# ===============================
+@app.route('/api/insurer/reports/<patient_id>')
 def insurer_get_reports(patient_id):
-    if 'user_id' not in session or session['user_type'] != 'Insurer':
+
+    if 'user_id' not in session or session['user_type'] != 'InsuranceProvider':
         return jsonify({'error': 'Unauthorized'}), 401
 
     conn = get_db_connection()
 
-    patient = conn.execute(
-        'SELECT PatientID FROM Patients WHERE PatientID = ?', (patient_id,)
-    ).fetchone()
-
-    if not patient:
-        conn.close()
-        return jsonify({'error': 'Patient not found'}), 404
-
     reports = conn.execute('''
-        SELECT ReportID, PatientID, ReportName, Category,
-               FileType, FilePath, UploadedAt
+        SELECT *
         FROM Reports
         WHERE PatientID = ?
-        ORDER BY UploadedAt DESC
     ''', (patient_id,)).fetchall()
+
     conn.close()
 
     return jsonify({'reports': [dict(r) for r in reports]})
-@app.route('/profile_dashboard')
-def profile_dashboard():
-    return render_template('profile.html')
+@app.route('/api/insurer/requests', methods=['GET'])
+def insurer_get_all_requests():
+
+    if 'user_id' not in session or session['user_type'] != 'InsuranceProvider':
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT RelatedID FROM Users WHERE UserID=?",
+        (session['user_id'],)
+    ).fetchone()
+
+    provider_id = user['RelatedID']
+
+    requests = conn.execute('''
+        SELECT ir.*, 
+               p.FirstName || ' ' || p.LastName AS PatientName
+        FROM InsuranceRequests ir
+        JOIN Patients p ON ir.PatientID = p.PatientID
+        WHERE ir.ProviderID = ?
+        ORDER BY ir.RequestID DESC
+    ''', (provider_id,)).fetchall()
+
+    conn.close()
+
+    return jsonify({'requests': [dict(r) for r in requests]})
+
 @app.route('/interface_dashboard')
 def interface_dashboard():
     return render_template('interface.html')
@@ -678,7 +941,49 @@ def get_patient_reports():
         "success": True,
         "reports": report_list
     })
+@app.route('/api/add_prescription', methods=['POST'])
+def add_prescription():
 
+    if 'user_id' not in session or session['user_type'] != 'Doctor':
+        return jsonify({"error": "Unauthorized"}), 403
+
+    patient_id = request.form.get("patient_id")
+    file = request.files.get("prescription_file")
+
+    if not patient_id:
+        return jsonify({"error": "Patient ID missing"}), 400
+
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    filename = secure_filename(file.filename)
+
+    if filename == "":
+        return jsonify({"error": "Invalid filename"}), 400
+
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
+
+    file.save(filepath)
+
+    conn = get_db_connection()
+
+    conn.execute("""
+        INSERT INTO Reports
+        (PatientID, ReportName, Category, FileType, FilePath, UploadedAt)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        patient_id,
+        filename,
+        "Prescription",
+        filename.split('.')[-1],
+        filename,
+        datetime.now()
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Prescription uploaded successfully"})
 if __name__ == '__main__':
     init_db()  # Optional: ensures DB is set up
     app.run(debug=True)

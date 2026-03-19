@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:wght@500&display=swap');
+
+      body {
+        margin: 2rem;
+        background: #f3f0fb;
+      }
+
+      .dc-wrapper {
+        font-family: 'DM Sans', sans-serif;
+        padding: 2rem 1.5rem;
+        background: #ddd5f3;
+        border-radius: 20px;
+      }
+
+      .dc-header h2 {
+        font-family: 'Fraunces', serif;
+        font-size: 22px;
+        font-weight: 500;
+        color: #2e1a6e;
+        margin: 0 0 1.75rem;
+      }
+
+      .dc-table-wrap {
+        background: #f0ebfc;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 0.5px solid #c3b4f0;
+      }
+
+      .dc-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .dc-table thead {
+        background: #7c5cbf;
+      }
+
+      .dc-table thead th {
+        color: #ede8f9;
+        font-weight: 500;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 14px 20px;
+        text-align: left;
+      }
+
+      .dc-table tbody tr {
+        border-bottom: 0.5px solid #d4c9f0;
+        transition: background 0.15s;
+      }
+
+      .dc-table tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      .dc-table tbody tr:hover {
+        background: #e8dff7;
+      }
+
+      .dc-table tbody td {
+        padding: 14px 20px;
+        color: #2e1a6e;
+        vertical-align: middle;
+      }
+
+      .dc-table tbody td:first-child {
+        font-weight: 500;
+        color: #3d2490;
+      }
+
+      .book-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 16px;
+        background: #7c5cbf;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s, transform 0.1s;
+      }
+
+      .book-btn:hover {
+        background: #6346a8;
+        transform: translateY(-1px);
+      }
+    </style>
+  </head>
+
+  <body>                            <!-- ✅ Fixed: was <body without closing > -->
+
+    <div class="dc-wrapper">        <!-- ✅ Fixed: wrapper div added -->
+      <div class="dc-header">       <!-- ✅ Fixed: header div added -->
+        <h2>Diagnostic Centers</h2>
+      </div>
+
+      <div class="dc-table-wrap">   <!-- ✅ Fixed: table-wrap div added -->
+        <table class="dc-table">    <!-- ✅ Fixed: class="dc-table" added -->
+          <thead>                   <!-- ✅ Fixed: thead added -->
+            <tr>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>                   <!-- ✅ Fixed: tbody added -->
+            {% for center in centers %}
+            <tr>
+              <td>{{ center.CenterName }}</td>
+              <td>{{ center.Address }}</td>
+              <td>
+                <a href="/book_test/{{ center.DiagnosticCenterID }}" class="book-btn">
+                  Book Test         <!-- ✅ Fixed: removed invalid <button> inside <a>, applied class directly -->
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,243 +1,345 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book a Test</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    :root {
-      --primary: #ddd5f3;
-      --primary-dark: #b9aedb;
-      --primary-light: #ebe7f8;
-      --accent: #9685cf;
-      --text-dark: #3a3a3a;
-      --text-light: #757575;
-      --white: #ffffff;
-      --background: #ddd5f3; /* Changed from #f8f7fc to #ddd5f3 */
-      --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
-      --card-hover: 0 10px 25px rgba(221, 213, 243, 0.2);
-    }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--background);
-      color: var(--text-dark);
-    }
-    
-    .container {
-      max-width: 800px;
-      background-color: var(--white);
-      border-radius: 15px;
-      box-shadow: var(--card-shadow);
-      padding: 30px;
-      margin-top: 30px;
-      margin-bottom: 50px;
-    }
-    
-    h2 {
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 30px;
-      position: relative;
-      padding-bottom: 10px;
-    }
-    
-    h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 3px;
-      background-color: var(--primary);
-    }
-    
-    .form-label {
-      font-weight: 500;
-      color: var(--text-dark);
-      margin-bottom: 8px;
-    }
-    
-    .form-control, .form-select {
-      border: 1px solid var(--primary-light);
-      border-radius: 8px;
-      padding: 10px 15px;
-      transition: all 0.3s ease;
-    }
-    
-    .form-control:focus, .form-select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 0.25rem rgba(150, 133, 207, 0.25);
-    }
-    
-    .btn-success {
-      background-color: var(--accent);
-      border-color: var(--accent);
-      padding: 12px 30px;
-      font-weight: 500;
-      border-radius: 8px;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-success:hover {
-      background-color: var(--primary-dark);
-      border-color: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(150, 133, 207, 0.3);
-    }
-    
-    .form-check-input:checked {
-      background-color: var(--accent);
-      border-color: var(--accent);
-    }
-    
-    .form-switch .form-check-input {
-      width: 3em;
-      height: 1.5em;
-    }
-    
-    .invalid-feedback {
-      color: #e74c3c;
-    }
-    
-    .was-validated .form-control:invalid, 
-    .was-validated .form-select:invalid {
-      border-color: #e74c3c;
-    }
-    
-    .was-validated .form-control:valid, 
-    .was-validated .form-select:valid {
-      border-color: var(--primary);
-    }
-    
-    @media (max-width: 768px) {
-      .container {
-        padding: 20px;
-        margin-top: 20px;
+<html>
+  <head>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:wght@500&display=swap');
+
+      body {
+        font-family: 'DM Sans', sans-serif;
+        background: #f3f0fb;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        margin: 0;
+        box-sizing: border-box;
       }
-      
-      h2 {
-        font-size: 1.5rem;
+
+      .form-card {
+        background: #ddd5f3;
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        width: 100%;
+        max-width: 440px;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="container my-5">
-    <h2 class="text-center mb-4">Book a Diagnostic Test</h2>
-    <form class="row g-3 needs-validation" novalidate>
-      
-      <!-- Patient Name -->
-      <div class="col-md-6">
-        <label for="name" class="form-label">Full Name</label>
-        <input type="text" class="form-control" id="name" required>
-        <div class="invalid-feedback">Please enter your name.</div>
-      </div>
 
-      <!-- Phone Number -->
-      <div class="col-md-6">
-        <label for="phone" class="form-label">Phone Number</label>
-        <input type="tel" class="form-control" id="phone" pattern="[0-9]{10}" required>
-        <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
-      </div>
+      .form-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 2rem;
+      }
 
-      <!-- Email -->
-      <div class="col-md-6">
-        <label for="email" class="form-label">Email (optional)</label>
-        <input type="email" class="form-control" id="email">
-      </div>
+      .form-icon {
+        width: 44px;
+        height: 44px;
+        background: #7c5cbf;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
 
-      <!-- Select Center -->
-      <div class="col-md-6">
-        <label for="center" class="form-label">Diagnostic Center</label>
-        <select class="form-select" id="center" required>
-          <option selected disabled value="">Choose...</option>
-          <option>City Lab Diagnostics</option>
-          <option>Wellness Path Labs</option>
-          <option>Precision Health Labs</option>
-        </select>
-        <div class="invalid-feedback">Please select a diagnostic center.</div>
-      </div>
+      .form-icon svg { width: 22px; height: 22px; fill: white; }
 
-      <!-- Test Type -->
-      <div class="col-md-6">
-        <label for="testType" class="form-label">Test Type</label>
-        <select class="form-select" id="testType" required>
-          <option selected disabled value="">Choose...</option>
-          <option>Blood Test</option>
-          <option>Full Body Checkup</option>
-          <option>Thyroid Test</option>
-          <option>COVID-19 Test</option>
-          <option>Other</option>
-        </select>
-        <div class="invalid-feedback">Please select a test type.</div>
-      </div>
+      .form-top h2 {
+        font-family: 'Fraunces', serif;
+        font-size: 20px;
+        font-weight: 500;
+        color: #2e1a6e;
+        margin: 0;
+      }
 
-      <!-- Date -->
-      <div class="col-md-6">
-        <label for="date" class="form-label">Preferred Date</label>
-        <input type="date" class="form-control" id="date" required>
-        <div class="invalid-feedback">Please select a date.</div>
-      </div>
+      .form-top p {
+        font-size: 12px;
+        color: #7a64b8;
+        margin: 2px 0 0;
+      }
 
-      <!-- Time -->
-      <div class="col-md-6">
-        <label for="time" class="form-label">Preferred Time</label>
-        <input type="time" class="form-control" id="time" required>
-        <div class="invalid-feedback">Please select a time.</div>
-      </div>
+      .form-body {
+        background: #f0ebfc;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 0.5px solid #c3b4f0;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
 
-      <!-- Home Collection Toggle -->
-      <div class="col-md-6">
-        <label class="form-label">Home Sample Collection</label>
-        <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" id="homeCollection">
-          <label class="form-check-label" for="homeCollection">Yes, I want home collection</label>
+      .field { display: flex; flex-direction: column; gap: 6px; }
+
+      .field label {
+        font-size: 12px;
+        font-weight: 500;
+        color: #5a3fa8;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .select-wrap { position: relative; }
+
+      .select-wrap::after {
+        content: '';
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid #7c5cbf;
+        pointer-events: none;
+      }
+
+      .field select,
+      .field input {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        color: #2e1a6e;
+        background: #ffffff;
+        border: 0.5px solid #c3b4f0;
+        border-radius: 10px;
+        padding: 11px 14px;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        width: 100%;
+        box-sizing: border-box;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+
+      .field select:focus,
+      .field input:focus {
+        border-color: #7c5cbf;
+        box-shadow: 0 0 0 3px rgba(124, 92, 191, 0.15);
+      }
+
+      .divider {
+        height: 0.5px;
+        background: #d4c9f0;
+        border: none;
+        margin: 0;
+      }
+
+      .submit-btn {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+        background: #7c5cbf;
+        border: none;
+        border-radius: 12px;
+        padding: 13px;
+        width: 100%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.15s, transform 0.1s;
+      }
+
+      .submit-btn:hover { background: #6346a8; transform: translateY(-1px); }
+      .submit-btn:active { transform: scale(0.98); }
+
+      .form-footer {
+        text-align: center;
+        font-size: 12px;
+        color: #9b87cc;
+        margin-top: 1rem;
+      }
+
+      /* ✅ Success notification */
+      .success-toast {
+        display: none;
+        background: #ffffff;
+        border: 0.5px solid #a78de0;
+        border-left: 4px solid #7c5cbf;
+        border-radius: 14px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.25rem;
+        animation: slideDown 0.35s ease;
+      }
+
+      .success-toast.show {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .toast-icon {
+        width: 32px;
+        height: 32px;
+        background: #7c5cbf;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .toast-icon svg { width: 16px; height: 16px; fill: white; }
+
+      .toast-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2e1a6e;
+        margin: 0 0 4px;
+      }
+
+      .toast-body {
+        font-size: 13px;
+        color: #5a3fa8;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      .toast-body span {
+        font-weight: 600;
+        color: #3d2490;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="form-card">
+      <div class="form-top">
+        <div class="form-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"/></svg>
+        </div>
+        <div>
+          <h2>Book Diagnostic Test</h2>
+          <p>Fill in the details to confirm your appointment</p>
         </div>
       </div>
 
-      <!-- Additional Notes -->
-      <div class="col-12">
-        <label for="notes" class="form-label">Additional Notes (optional)</label>
-        <textarea class="form-control" id="notes" rows="3"></textarea>
+      <!-- ✅ Success Toast Notification -->
+      <div class="success-toast" id="successToast">
+        <div class="toast-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div>
+          <p class="toast-title">Test Booked Successfully!</p>
+          <p class="toast-body">
+            <span id="toastTest"></span> has been scheduled at
+            <span id="toastCenter"></span> on
+            <span id="toastDate"></span>.
+          </p>
+        </div>
       </div>
 
-      <!-- Submit Button -->
-      <div class="col-12 text-center">
-        <button class="btn btn-success btn-lg" type="submit">
-          <i class="fas fa-calendar-check me-2"></i>Submit Booking
-        </button>
-      </div>
+      <form method="POST" id="bookingForm" onsubmit="handleBooking(event)">
+        <div class="form-body">
 
-    </form>
-  </div>
+          <!-- Diagnostic Center (hidden — passed from previous page via Flask) -->
+          <!-- In real use: replace value with {{ center.CenterName }} -->
+          <input type="hidden" id="centerName" name="center_name" value="{{ center['CenterName'] if center else '' }}">
 
-  <!-- Bootstrap JS & Form Validation -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Bootstrap form validation
-    (() => {
-      'use strict';
-      const forms = document.querySelectorAll('.needs-validation');
-      Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-          form.classList.add('was-validated');
-        }, false);
-      });
-      
-      // Set minimum date to today
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('date').min = today;
-    })();
-  </script>
-</body>
+          <div class="field">
+            <label for="test_type">Test Type</label>
+            <div class="select-wrap">
+              <select id="test_type" name="test_type" required>
+                <option value="">— Select a test —</option>
+                <optgroup label="Blood Tests">
+                  <option value="Complete Blood Count (CBC)">Complete Blood Count (CBC)</option>
+                  <option value="Blood Glucose Test">Blood Glucose Test</option>
+                  <option value="Lipid Profile">Lipid Profile</option>
+                  <option value="Thyroid Profile (T3/T4/TSH)">Thyroid Profile (T3/T4/TSH)</option>
+                  <option value="Liver Function Test (LFT)">Liver Function Test (LFT)</option>
+                  <option value="Kidney Function Test (KFT)">Kidney Function Test (KFT)</option>
+                  <option value="HbA1c (Diabetes Check)">HbA1c (Diabetes Check)</option>
+                  <option value="Vitamin D Test">Vitamin D Test</option>
+                  <option value="Vitamin B12 Test">Vitamin B12 Test</option>
+                  <option value="Iron Studies">Iron Studies</option>
+                </optgroup>
+                <optgroup label="Urine Tests">
+                  <option value="Urine Routine & Microscopy">Urine Routine &amp; Microscopy</option>
+                  <option value="Urine Culture & Sensitivity">Urine Culture &amp; Sensitivity</option>
+                  <option value="Urine Protein Test">Urine Protein Test</option>
+                </optgroup>
+                <optgroup label="Imaging">
+                  <option value="X-Ray Chest">X-Ray — Chest</option>
+                  <option value="X-Ray Bone">X-Ray — Bone</option>
+                  <option value="Ultrasound Abdomen">Ultrasound — Abdomen</option>
+                  <option value="Ultrasound Pelvis">Ultrasound — Pelvis</option>
+                  <option value="MRI Brain">MRI — Brain</option>
+                  <option value="MRI Spine">MRI — Spine</option>
+                  <option value="CT Scan Abdomen">CT Scan — Abdomen</option>
+                  <option value="CT Scan Chest">CT Scan — Chest</option>
+                </optgroup>
+                <optgroup label="Cardiac Tests">
+                  <option value="ECG / EKG">ECG / EKG</option>
+                  <option value="Stress Test (TMT)">Stress Test (TMT)</option>
+                  <option value="Holter Monitor">Holter Monitor</option>
+                  <option value="Echocardiogram">Echocardiogram</option>
+                </optgroup>
+                <optgroup label="Health Packages">
+                  <option value="Basic Health Checkup">Basic Health Checkup</option>
+                  <option value="Full Body Checkup">Full Body Checkup</option>
+                  <option value="Women's Health Package">Women's Health Package</option>
+                  <option value="Senior Citizen Package">Senior Citizen Package</option>
+                  <option value="Diabetes Care Package">Diabetes Care Package</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <div class="field">
+            <label for="date">Appointment Date</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:white;">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            Confirm Booking
+          </button>
+
+        </div>
+      </form>
+
+      <p class="form-footer">Your data is safe and secure</p>
+    </div>
+
+    <script>
+      function handleBooking(e) {
+        e.preventDefault();
+
+        const test     = document.getElementById('test_type').value;
+        const date     = document.getElementById('date').value;
+        const center   = document.getElementById('centerName').value || 'the selected center';
+
+        if (!test || !date) return;
+
+        // Format date nicely: e.g. "16 March 2026"
+        const formatted = new Date(date + 'T00:00:00').toLocaleDateString('en-IN', {
+          day: 'numeric', month: 'long', year: 'numeric'
+        });
+
+        document.getElementById('toastTest').textContent   = test;
+        document.getElementById('toastCenter').textContent = center;
+        document.getElementById('toastDate').textContent   = formatted;
+
+        const toast = document.getElementById('successToast');
+        toast.classList.add('show');
+        toast.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Submit to Flask after showing notification
+        setTimeout(() => {
+          e.target.submit();
+        }, 2500);
+      }
+    </script>
+
+  </body>
 </html>

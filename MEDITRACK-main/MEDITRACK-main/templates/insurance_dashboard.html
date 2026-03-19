@@ -3,245 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insurance Dashboard — MediPortal</title>
+    <title>Insurance Dashboard — MediVault</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --teal:        #0d9488;
-            --teal-light:  #99f6e4;
-            --teal-dark:   #0f766e;
-            --teal-faint:  #f0fdfa;
-            --slate:       #1e293b;
-            --slate-mid:   #475569;
-            --slate-light: #94a3b8;
-            --border:      #e2e8f0;
-            --white:       #ffffff;
-            --bg:          #f8fafc;
-            --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-            --sidebar-w:   270px;
-            --red:         #ef4444;
-            --amber:       #f59e0b;
-            --green:       #22c55e;
+            /* Landing page palette */
+            --lavender:       #c8b8f0;
+            --lavender-light: #ddd5f3;
+            --lavender-pale:  #ede8fb;
+            --lavender-faint: #f5f2fd;
+            --purple-deep:    #7c5cbf;
+            --purple-mid:     #9b7dd4;
+            --purple-muted:   #b39fd9;
+            --magenta:        #e040fb;
+            --magenta-soft:   #f0abfc;
+            --orange-accent:  #f97316;
+            --bg:             #f0ecfa;
+            --white:          #ffffff;
+            --sidebar-bg:     #2d1b69;
+            --sidebar-mid:    #3d2780;
+            --border:         #ddd5f3;
+            --text-main:      #2d1b69;
+            --text-mid:       #6b5b9e;
+            --text-light:     #a395c8;
+            --green:          #10b981;
+            --red:            #ef4444;
+            --amber:          #f59e0b;
+            --blue:           #3b82f6;
+            --sidebar-w:      280px;
+            --card-shadow:    0 2px 8px rgba(100,70,200,0.08), 0 8px 32px rgba(100,70,200,0.06);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--bg);
-            color: var(--slate);
+            color: var(--text-main);
             display: flex;
             min-height: 100vh;
             line-height: 1.6;
         }
 
-        /* ══ SIDEBAR ══════════════════════════════════════════ */
+        /* ══ ANIMATED BG BLOBS ══ */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -120px; right: -120px;
+            width: 480px; height: 480px;
+            background: radial-gradient(circle, rgba(224,64,251,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: blobDrift 12s ease-in-out infinite alternate;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -100px; left: 200px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(124,92,191,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: blobDrift 15s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes blobDrift {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(30px, 20px) scale(1.08); }
+        }
+
+        /* ══ SIDEBAR ══ */
         .sidebar {
             width: var(--sidebar-w);
-            background: var(--slate);
+            background: linear-gradient(180deg, var(--sidebar-bg) 0%, #1e1050 100%);
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
             position: sticky;
             top: 0;
             height: 100vh;
+            z-index: 10;
+            box-shadow: 4px 0 24px rgba(45,27,105,0.25);
         }
 
         .sidebar-brand {
-            padding: 28px 24px 20px;
+            padding: 32px 28px 24px;
             border-bottom: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+        }
+        .sidebar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 28px; right: 28px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(224,64,251,0.5), transparent);
         }
 
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--magenta), var(--purple-deep));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(224,64,251,0.4);
+        }
         .brand-name {
-            font-family: 'Fraunces', serif;
-            font-size: 1.4rem;
-            color: var(--teal-light);
-            letter-spacing: -0.02em;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.03em;
         }
-
+        .brand-name span { color: var(--magenta-soft); }
         .brand-sub {
-            font-size: 0.72rem;
-            color: var(--slate-light);
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 2px;
+            letter-spacing: 0.15em;
+            font-weight: 500;
+            margin-left: 46px;
         }
 
         .sidebar-nav {
             list-style: none;
-            padding: 16px 0;
+            padding: 20px 0;
             flex: 1;
+        }
+
+        .nav-section-label {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.25);
+            font-weight: 600;
+            padding: 16px 28px 8px;
         }
 
         .sidebar-nav li a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 24px;
-            color: var(--slate-light);
+            padding: 11px 28px;
+            color: rgba(255,255,255,0.55);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 500;
             transition: all 0.2s;
             border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .sidebar-nav li a .nav-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .sidebar-nav li a:hover {
-            color: var(--white);
+            color: rgba(255,255,255,0.85);
             background: rgba(255,255,255,0.05);
+        }
+        .sidebar-nav li a:hover .nav-icon {
+            background: rgba(224,64,251,0.2);
+            color: var(--magenta-soft);
         }
 
         .sidebar-nav li.active a {
-            color: var(--teal-light);
-            background: rgba(13,148,136,0.12);
-            border-left-color: var(--teal);
+            color: white;
+            background: rgba(224,64,251,0.12);
+            border-left-color: var(--magenta);
+        }
+        .sidebar-nav li.active a .nav-icon {
+            background: rgba(224,64,251,0.25);
+            color: var(--magenta-soft);
         }
 
-        .sidebar-nav li i { width: 18px; text-align: center; }
-
-        .sidebar-footer {
-            padding: 16px 24px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .sidebar-footer a {
+        .sidebar-user {
+            padding: 20px 28px;
+            border-top: 1px solid rgba(255,255,255,0.06);
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: var(--slate-light);
-            text-decoration: none;
-            font-size: 0.88rem;
-            transition: color 0.2s;
+            gap: 12px;
         }
+        .user-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--magenta), var(--purple-deep));
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 0.85rem;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(224,64,251,0.35);
+        }
+        .user-info { flex: 1; min-width: 0; }
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .user-role {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+        }
+        .logout-btn {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+        .logout-btn:hover { color: var(--red); }
 
-        .sidebar-footer a:hover { color: var(--red); }
-
-        /* ══ MAIN ═════════════════════════════════════════════ */
-        .main { flex: 1; padding: 36px 40px; overflow-y: auto; max-width: 1200px; }
+        /* ══ MAIN ══ */
+        .main {
+            flex: 1;
+            padding: 36px 44px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+        }
 
         /* ── Page header ── */
         .page-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 32px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 36px;
         }
 
-        .page-header h1 {
-            font-family: 'Fraunces', serif;
-            font-size: 1.9rem;
-            color: var(--slate);
-            letter-spacing: -0.03em;
-            line-height: 1.2;
+        .page-header-text h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.04em;
+            line-height: 1.1;
         }
-
-        .page-header h1 span { color: var(--teal); }
-
-        .page-header p {
+        .page-header-text h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, var(--magenta), var(--purple-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-header-text p {
             font-size: 0.88rem;
-            color: var(--slate-light);
-            margin-top: 4px;
+            color: var(--text-light);
+            margin-top: 6px;
         }
 
-        /* ── Info cards ── */
-        .info-card {
-            background: var(--white);
-            border-radius: 14px;
-            padding: 24px;
-            margin-bottom: 28px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-        }
-
-        .info-card-header {
+        .header-badge {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 18px;
+            gap: 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 8px 16px 8px 10px;
+            box-shadow: var(--card-shadow);
         }
-
-        .info-card-header .icon {
-            width: 36px; height: 36px;
-            background: var(--teal-faint);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--teal);
-            font-size: 0.95rem;
+        .header-badge .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(16,185,129,0.5);
+            animation: pulse 2s ease-in-out infinite;
         }
-
-        .info-card-header h3 {
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--slate-light);
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
+        }
+        .header-badge span {
+            font-size: 0.8rem;
             font-weight: 600;
+            color: var(--text-mid);
         }
 
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
+        /* ── Provider Card ── */
+        .provider-card {
+            background: linear-gradient(135deg, var(--sidebar-bg) 0%, #4a2d9e 100%);
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(45,27,105,0.25);
         }
-
-        .detail-item label {
-            display: block;
+        .provider-card::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(224,64,251,0.3) 0%, transparent 65%);
+            border-radius: 50%;
+        }
+        .provider-card::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: 30%;
+            width: 150px; height: 150px;
+            background: radial-gradient(circle, rgba(155,125,212,0.2) 0%, transparent 65%);
+            border-radius: 50%;
+        }
+        .provider-card-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .provider-shield {
+            width: 48px; height: 48px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--magenta-soft);
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+        .provider-card-top h3 {
+            font-family: 'Syne', sans-serif;
             font-size: 0.72rem;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--slate-light);
-            margin-bottom: 4px;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.5);
+            font-weight: 600;
         }
-
-        .detail-item span {
-            font-size: 0.95rem;
+        .provider-card-top .verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(16,185,129,0.2);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: #6ee7b7;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .provider-detail label {
+            display: block;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .provider-detail span {
+            font-size: 0.9rem;
             font-weight: 500;
-            color: var(--slate);
+            color: white;
         }
 
         /* ── Search ── */
         .search-section { margin-bottom: 28px; }
-
-        .search-section h2 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--slate);
-            margin-bottom: 14px;
+        .search-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        .search-label i { color: var(--purple-mid); }
 
         .search-row {
             display: flex;
-            gap: 12px;
-            align-items: center;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .search-wrap {
+            flex: 1;
+            position: relative;
+        }
+        .search-wrap i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            pointer-events: none;
         }
 
         .search-input {
-            flex: 1;
-            padding: 13px 18px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 0.95rem;
+            width: 100%;
+            padding: 14px 18px 14px 46px;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            font-size: 0.92rem;
             font-family: inherit;
             background: var(--white);
-            color: var(--slate);
+            color: var(--text-main);
             transition: border 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(100,70,200,0.05);
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+            border-color: var(--purple-mid);
+            box-shadow: 0 0 0 4px rgba(155,125,212,0.15);
         }
+        .search-input::placeholder { color: var(--text-light); }
 
         .btn {
-            padding: 13px 22px;
+            padding: 14px 24px;
             border: none;
-            border-radius: 10px;
+            border-radius: 14px;
             cursor: pointer;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             font-weight: 600;
             font-family: inherit;
             display: inline-flex;
@@ -252,73 +455,88 @@
         }
 
         .btn-primary {
-            background: var(--teal);
-            color: var(--white);
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--purple-deep) 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(224,64,251,0.3);
         }
 
         .btn-primary:hover {
-            background: var(--teal-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(13,148,136,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(224,64,251,0.4);
         }
+        .btn-primary:active { transform: translateY(0); }
 
-        /* ── Patient card ── */
+        /* ── Patient Card ── */
         #patientCard { display: none; }
 
         .patient-banner {
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 16px 20px;
-            background: var(--teal-faint);
-            border: 1px solid var(--teal-light);
-            border-radius: 10px;
-            margin-bottom: 18px;
+            padding: 18px 22px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .patient-banner::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--magenta), var(--purple-deep));
+            border-radius: 4px 0 0 4px;
         }
 
         .patient-avatar {
-            width: 48px; height: 48px;
-            background: var(--teal);
-            border-radius: 50%;
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--magenta), var(--purple-deep));
+            border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
-            color: var(--white);
-            font-size: 1.2rem;
-            font-family: 'Fraunces', serif;
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(224,64,251,0.3);
         }
 
         .patient-banner-info h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--slate);
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
         }
-
         .patient-banner-info p {
-            font-size: 0.82rem;
-            color: var(--slate-mid);
+            font-size: 0.8rem;
+            color: var(--text-light);
         }
 
         /* ── Tabs ── */
         .tabs {
             display: flex;
-            gap: 4px;
-            background: var(--bg);
+            gap: 6px;
+            background: var(--white);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 4px;
+            border-radius: 14px;
+            padding: 5px;
             margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px 16px;
+            padding: 10px 18px;
             border: none;
             background: transparent;
-            border-radius: 7px;
-            font-size: 0.88rem;
+            border-radius: 10px;
+            font-size: 0.86rem;
             font-weight: 600;
             font-family: inherit;
-            color: var(--slate-light);
+            color: var(--text-light);
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -328,84 +546,147 @@
         }
 
         .tab-btn.active {
-            background: var(--white);
-            color: var(--teal);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            background: linear-gradient(135deg, var(--magenta), var(--purple-deep));
+            color: white;
+            box-shadow: 0 4px 12px rgba(224,64,251,0.25);
         }
 
         .tab-btn .count {
-            background: var(--teal);
-            color: var(--white);
             border-radius: 20px;
             padding: 1px 8px;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.25);
         }
-
         .tab-btn:not(.active) .count {
-            background: var(--border);
-            color: var(--slate-light);
+            background: var(--lavender-pale);
+            color: var(--purple-mid);
         }
 
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* ── Insurance Requests Table ── */
+        /* ── Table ── */
         .table-wrapper {
             background: var(--white);
-            border-radius: 14px;
+            border-radius: 18px;
             border: 1px solid var(--border);
-            overflow: hidden;
+            overflow-x: auto;
             box-shadow: var(--card-shadow);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        table { width: 100%; border-collapse: collapse; min-width: 780px; }
 
         thead {
-            background: var(--bg);
+            background: linear-gradient(135deg, var(--lavender-faint) 0%, var(--lavender-pale) 100%);
             border-bottom: 1px solid var(--border);
         }
 
         thead th {
-            padding: 13px 18px;
+            padding: 16px 22px;
             text-align: left;
             font-size: 0.72rem;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--slate-light);
-            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+            white-space: nowrap;
         }
 
         tbody tr {
             border-bottom: 1px solid var(--border);
             transition: background 0.15s;
         }
-
         tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: var(--teal-faint); }
+        tbody tr:hover { background: var(--lavender-faint); }
 
         tbody td {
-            padding: 14px 18px;
-            font-size: 0.88rem;
-            color: var(--slate);
+            padding: 16px 22px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            vertical-align: middle;
         }
 
+        /* Action column: never wrap, give it breathing room */
+        tbody td:last-child,
+        thead th:last-child {
+            min-width: 180px;
+            white-space: nowrap;
+        }
+
+        /* ── Badges ── */
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 3px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+        .badge::before {
+            content: '';
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .badge-pending  { background: #fef3c7; color: #92400e; }
-        .badge-approved { background: #dcfce7; color: #166534; }
-        .badge-rejected { background: #fee2e2; color: #991b1b; }
-        .badge-review   { background: #dbeafe; color: #1e40af; }
+        .badge-pending  { background: #fef9c3; color: #854d0e; }
+        .badge-pending::before { background: #ca8a04; }
+        .badge-approved { background: #dcfce7; color: #14532d; }
+        .badge-approved::before { background: #16a34a; }
+        .badge-rejected { background: #fee2e2; color: #7f1d1d; }
+        .badge-rejected::before { background: #dc2626; }
+        .badge-review   { background: #ede9fe; color: #3b0764; }
+        .badge-review::before { background: var(--purple-mid); }
+
+        /* ── Action buttons ── */
+        .action-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        .accept-btn {
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+        }
+        .accept-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.35); }
+
+        .reject-btn {
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.25);
+        }
+        .reject-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239,68,68,0.35); }
 
         /* ── Reports Grid ── */
         .reports-grid {
@@ -416,130 +697,195 @@
 
         .report-card {
             background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             box-shadow: var(--card-shadow);
-            transition: all 0.2s;
+            transition: all 0.25s;
         }
 
         .report-card:hover {
-            border-color: var(--teal);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(13,148,136,0.1);
+            border-color: var(--purple-mid);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(124,92,191,0.15);
         }
 
         .report-card-icon {
-            width: 42px; height: 42px;
-            border-radius: 10px;
+            width: 44px; height: 44px;
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.1rem;
         }
-
         .icon-pdf  { background: #fee2e2; color: #dc2626; }
         .icon-img  { background: #dbeafe; color: #2563eb; }
         .icon-doc  { background: #ede9fe; color: #7c3aed; }
-        .icon-file { background: var(--teal-faint); color: var(--teal); }
+        .icon-file { background: var(--lavender-pale); color: var(--purple-deep); }
 
         .report-card h4 {
             font-size: 0.88rem;
             font-weight: 600;
-            color: var(--slate);
+            color: var(--text-main);
             line-height: 1.3;
         }
-
         .report-card .meta {
-            font-size: 0.75rem;
-            color: var(--slate-light);
+            font-size: 0.73rem;
+            color: var(--text-light);
         }
-
         .report-card .category-tag {
             display: inline-block;
-            padding: 2px 10px;
-            background: var(--teal-faint);
-            color: var(--teal-dark);
+            padding: 3px 10px;
+            background: var(--lavender-pale);
+            color: var(--purple-deep);
             border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            font-weight: 700;
         }
-
         .view-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 8px 14px;
-            background: var(--teal-faint);
-            color: var(--teal-dark);
-            border: 1px solid var(--teal-light);
-            border-radius: 7px;
-            font-size: 0.82rem;
+            padding: 9px 14px;
+            background: var(--lavender-pale);
+            color: var(--purple-deep);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.8rem;
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
             text-decoration: none;
             transition: all 0.2s;
         }
-
         .view-btn:hover {
-            background: var(--teal);
-            color: var(--white);
-            border-color: var(--teal);
+            background: linear-gradient(135deg, var(--magenta), var(--purple-deep));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(224,64,251,0.25);
+        }
+
+        /* ── Section Card ── */
+        .section-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--lavender-pale), var(--lavender-light));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--purple-deep);
+            font-size: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .section-header h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .section-header .count-pill {
+            margin-left: auto;
+            background: var(--lavender-pale);
+            color: var(--purple-mid);
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
         }
 
         /* ── Empty / Loading states ── */
         .empty-state {
             text-align: center;
-            padding: 48px 24px;
-            color: var(--slate-light);
+            padding: 52px 24px;
+            color: var(--text-light);
         }
-
-        .empty-state i {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-            opacity: 0.4;
+        .empty-state .empty-icon {
+            width: 64px; height: 64px;
+            background: var(--lavender-faint);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+            color: var(--lavender);
         }
-
-        .empty-state p { font-size: 0.9rem; }
+        .empty-state p {
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
 
         .loading {
             text-align: center;
-            padding: 36px;
-            color: var(--slate-light);
-            font-size: 0.9rem;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-
-        .loading i { animation: spin 1s linear infinite; margin-right: 8px; }
+        .loading i { animation: spin 1s linear infinite; color: var(--purple-mid); }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ── Toast ── */
         .toast {
             position: fixed;
-            bottom: 24px; right: 24px;
-            padding: 13px 20px;
-            border-radius: 10px;
-            font-size: 0.88rem;
+            bottom: 28px; right: 28px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 0.86rem;
             font-family: inherit;
-            font-weight: 500;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            font-weight: 600;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.15);
             z-index: 9999;
             opacity: 1;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
+            transform: translateY(0);
         }
-
-        .toast.success { background: #0d9488; color: #fff; }
-        .toast.error   { background: #ef4444; color: #fff; }
+        .toast.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
 
         /* ── Responsive ── */
         @media (max-width: 900px) {
             .main { padding: 24px 20px; }
             .sidebar { display: none; }
+        }
+
+        /* ── Fade-in animation ── */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out both;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -548,18 +894,57 @@
 <!-- ══ SIDEBAR ══ -->
 <aside class="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-name">MediPortal</div>
+        <div class="brand-logo">
+            <div class="brand-icon"><i class="fas fa-shield-heart"></i></div>
+            <div class="brand-name">Medi<span>Vault</span></div>
+        </div>
         <div class="brand-sub">Insurance Portal</div>
     </div>
+
     <ul class="sidebar-nav">
+        <div class="nav-section-label">Menu</div>
         <li class="active">
             <a href="/insurer_dashboard">
-                <i class="fas fa-th-large"></i> Dashboard
+                <div class="nav-icon"><i class="fas fa-th-large"></i></div>
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                All Claims
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="nav-icon"><i class="fas fa-users"></i></div>
+                Patients
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                Analytics
+            </a>
+        </li>
+        <div class="nav-section-label" style="margin-top:12px">Settings</div>
+        <li>
+            <a href="#">
+                <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                Settings
             </a>
         </li>
     </ul>
-    <div class="sidebar-footer">
-        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+
+    <div class="sidebar-user">
+        <div class="user-avatar">MV</div>
+        <div class="user-info">
+            <div class="user-name">{{ providername }}</div>
+            <div class="user-role">Insurance Provider</div>
+        </div>
+        <a href="/logout" class="logout-btn" title="Sign out">
+            <i class="fas fa-arrow-right-from-bracket"></i>
+        </a>
     </div>
 </aside>
 
@@ -567,37 +952,46 @@
 <main class="main">
 
     <!-- Page header -->
-    <div class="page-header">
-        <div>
-            <h1>Insurance <span>Dashboard</span></h1>
+    <div class="page-header fade-in">
+        <div class="page-header-text">
+            <h1>Insurance <em>Dashboard</em></h1>
             <p>Review patient insurance requests and medical reports</p>
+        </div>
+        <div class="header-badge">
+            <div class="dot"></div>
+            <span>Live Dashboard</span>
         </div>
     </div>
 
-    <!-- Provider Info Card -->
-    <div class="info-card">
-        <div class="info-card-header">
-            <div class="icon"><i class="fas fa-shield-alt"></i></div>
-            <h3>Provider Information</h3>
+    <!-- Provider Card -->
+    <div class="provider-card fade-in" style="animation-delay:0.05s">
+        <div class="provider-card-top">
+            <div class="provider-shield"><i class="fas fa-shield-alt"></i></div>
+            <div>
+                <h3>Provider Information</h3>
+            </div>
+            <div style="margin-left:auto">
+                <span class="verified"><i class="fas fa-circle-check"></i> Verified</span>
+            </div>
         </div>
-        <div class="detail-grid">
-            <div class="detail-item">
+        <div class="provider-grid">
+            <div class="provider-detail">
                 <label>Provider Name</label>
                 <span>{{ providername }}</span>
             </div>
-            <div class="detail-item">
+            <div class="provider-detail">
                 <label>Provider ID</label>
                 <span>{{ providerid }}</span>
             </div>
-            <div class="detail-item">
+            <div class="provider-detail">
                 <label>Contact</label>
                 <span>{{ providercontact }}</span>
             </div>
-            <div class="detail-item">
+            <div class="provider-detail">
                 <label>Email</label>
                 <span>{{ provideremail }}</span>
             </div>
-            <div class="detail-item">
+            <div class="provider-detail">
                 <label>Address</label>
                 <span>{{ provideraddress }}</span>
             </div>
@@ -605,21 +999,26 @@
     </div>
 
     <!-- Patient Search -->
-    <div class="search-section">
-        <h2><i class="fas fa-search" style="color:var(--teal);margin-right:8px"></i>Search Patient</h2>
+    <div class="search-section fade-in" style="animation-delay:0.1s">
+        <div class="search-label">
+            <i class="fas fa-magnifying-glass"></i>
+            Search Patient
+        </div>
         <div class="search-row">
-            <input type="text" class="search-input" id="patientSearch"
-                   placeholder="Enter Patient ID (e.g. a1b2c3d4e5f6)..." />
+            <div class="search-wrap">
+                <i class="fas fa-id-card"></i>
+                <input type="text" class="search-input" id="patientSearch"
+                       placeholder="Enter Patient ID (e.g. a1b2c3d4e5f6)…" />
+            </div>
             <button class="btn btn-primary" id="searchBtn">
                 <i class="fas fa-search"></i> Search
             </button>
         </div>
     </div>
 
-    <!-- Patient Card + Tabs (hidden until search) -->
-    <div id="patientCard">
+    <!-- Patient Card + Tabs -->
+    <div id="patientCard" class="fade-in">
 
-        <!-- Patient Banner -->
         <div class="patient-banner">
             <div class="patient-avatar" id="patientInitial">?</div>
             <div class="patient-banner-info">
@@ -628,7 +1027,6 @@
             </div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('requests')" id="tab-requests">
                 <i class="fas fa-file-invoice"></i> Insurance Requests
@@ -658,7 +1056,7 @@
                         <tr>
                             <td colspan="6">
                                 <div class="empty-state">
-                                    <i class="fas fa-search"></i>
+                                    <div class="empty-icon"><i class="fas fa-search"></i></div>
                                     <p>Search for a patient to view their insurance requests</p>
                                 </div>
                             </td>
@@ -670,23 +1068,54 @@
 
         <!-- Tab: Medical Reports -->
         <div class="tab-panel" id="panel-reports">
-            <div class="reports-grid" id="reportsGrid">
-                <!-- filled by JS -->
-            </div>
+            <div class="reports-grid" id="reportsGrid"></div>
             <div id="reportsEmpty" class="empty-state" style="display:none">
-                <i class="fas fa-folder-open"></i>
+                <div class="empty-icon"><i class="fas fa-folder-open"></i></div>
                 <p>No medical reports found for this patient</p>
             </div>
         </div>
 
-    </div><!-- /patientCard -->
+    </div>
+
+    <!-- All Requests -->
+    <div class="section-card fade-in" style="animation-delay:0.15s">
+        <div class="section-header">
+            <div class="section-icon"><i class="fas fa-list-check"></i></div>
+            <h3>All Insurance Requests</h3>
+            <span class="count-pill" id="allCount">—</span>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Patient ID</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="allRequestsTable">
+                    <tr>
+                        <td colspan="7">
+                            <div class="loading">
+                                <i class="fas fa-spinner"></i> Loading requests…
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </main>
 
 <script>
     let currentPatientId = null;
 
-    // ── Search ────────────────────────────────────────────────
     document.getElementById('searchBtn').addEventListener('click', doSearch);
     document.getElementById('patientSearch').addEventListener('keydown', e => {
         if (e.key === 'Enter') doSearch();
@@ -700,79 +1129,64 @@
 
     function loadPatient(pid) {
         document.getElementById('patientCard').style.display = 'none';
-
         fetch(`/api/insurer/patient/${encodeURIComponent(pid)}`)
             .then(r => { if (!r.ok) throw new Error('Not found'); return r.json(); })
             .then(data => {
                 currentPatientId = pid;
-
-                // Banner
                 const initials = data.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
                 document.getElementById('patientInitial').textContent = initials;
                 document.getElementById('patientName').textContent    = data.name;
                 document.getElementById('patientMeta').textContent    =
                     `ID: ${data.id}  •  Age: ${data.age}  •  ${data.gender}  •  ${data.contact}`;
-
                 document.getElementById('patientCard').style.display = 'block';
-
-                // Load both tabs
                 loadRequests(pid);
                 loadReports(pid);
-
                 toast('Patient found', 'success');
             })
             .catch(() => toast('Patient not found. Check the ID and try again.', 'error'));
     }
 
-    // ── Insurance Requests ────────────────────────────────────
     function loadRequests(pid) {
         const tbody = document.getElementById('requestsBody');
         tbody.innerHTML = `<tr><td colspan="6"><div class="loading"><i class="fas fa-spinner"></i>Loading requests…</div></td></tr>`;
-
         fetch(`/api/insurer/requests/${encodeURIComponent(pid)}`)
             .then(r => r.json())
             .then(data => {
                 document.getElementById('reqCount').textContent = data.requests.length;
-
                 if (data.requests.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-file-invoice"></i><p>No insurance requests found for this patient</p></div></td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon"><i class="fas fa-file-invoice"></i></div><p>No insurance requests found for this patient</p></div></td></tr>`;
                     return;
                 }
-
                 tbody.innerHTML = data.requests.map(req => `
                     <tr>
-                        <td><strong>#${req.RequestID}</strong></td>
+                        <td><strong style="color:var(--purple-deep);font-family:'Syne',sans-serif">#${req.RequestID}</strong></td>
                         <td>${req.RequestType || '—'}</td>
                         <td>${req.Amount ? '₹' + Number(req.Amount).toLocaleString() : '—'}</td>
-                        <td>${formatDate(req.RequestDate)}</td>
+                        <td style="color:var(--text-light)">${formatDate(req.RequestDate)}</td>
                         <td>${statusBadge(req.Status)}</td>
-                        <td style="color:var(--slate-mid);font-size:0.82rem">${req.Notes || '—'}</td>
+                        <td style="color:var(--text-light);font-size:0.8rem">${req.Notes || '—'}</td>
                     </tr>
                 `).join('');
             })
             .catch(() => {
-                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load requests</p></div></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon"><i class="fas fa-exclamation-circle"></i></div><p>Failed to load requests</p></div></td></tr>`;
             });
     }
 
-    // ── Medical Reports ───────────────────────────────────────
     function loadReports(pid) {
         const grid  = document.getElementById('reportsGrid');
         const empty = document.getElementById('reportsEmpty');
         grid.innerHTML  = `<div class="loading" style="grid-column:1/-1"><i class="fas fa-spinner"></i>Loading reports…</div>`;
         empty.style.display = 'none';
-
         fetch(`/api/insurer/reports/${encodeURIComponent(pid)}`)
             .then(r => r.json())
             .then(data => {
                 document.getElementById('repCount').textContent = data.reports.length;
-
                 if (data.reports.length === 0) {
                     grid.innerHTML = '';
                     empty.style.display = 'block';
                     return;
                 }
-
                 grid.innerHTML = data.reports.map(rep => `
                     <div class="report-card">
                         <div class="report-card-icon ${fileIcon(rep.FileType)}">
@@ -795,7 +1209,6 @@
             });
     }
 
-    // ── Tabs ──────────────────────────────────────────────────
     function switchTab(name) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -803,12 +1216,11 @@
         document.getElementById('panel-' + name).classList.add('active');
     }
 
-    // ── Helpers ───────────────────────────────────────────────
     function statusBadge(status) {
         const map = {
-            'Pending':  'badge-pending',
-            'Approved': 'badge-approved',
-            'Rejected': 'badge-rejected',
+            'Pending':      'badge-pending',
+            'Approved':     'badge-approved',
+            'Rejected':     'badge-rejected',
             'Under Review': 'badge-review'
         };
         const cls = map[status] || 'badge-pending';
@@ -841,9 +1253,58 @@
     function toast(msg, type = 'success') {
         const el = document.createElement('div');
         el.className = `toast ${type}`;
-        el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+        el.innerHTML = `<i class="fas fa-${type === 'success' ? 'circle-check' : 'circle-exclamation'}"></i> ${msg}`;
         document.body.appendChild(el);
-        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 350); }, 3000);
+        setTimeout(() => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(12px)';
+            setTimeout(() => el.remove(), 350);
+        }, 3000);
+    }
+
+    window.onload = function() { loadAllRequests(); };
+
+    function loadAllRequests() {
+        fetch('/api/insurer/requests')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('allRequestsTable');
+                document.getElementById('allCount').textContent = data.requests.length + ' total';
+                if (data.requests.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"><i class="fas fa-inbox"></i></div><p>No requests found</p></div></td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = data.requests.map(req => {
+                    let actionButtons = req.Status === 'Pending'
+                        ? `<div class="action-cell"><button class="accept-btn" onclick="updateStatus(${req.RequestID}, 'Approved')"><i class="fas fa-check"></i> Accept</button><button class="reject-btn" onclick="updateStatus(${req.RequestID}, 'Rejected')"><i class="fas fa-xmark"></i> Reject</button></div>`
+                        : `${statusBadge(req.Status)}`;
+                    return `
+                        <tr>
+                            <td><strong style="color:var(--purple-deep);font-family:'Syne',sans-serif">#${req.RequestID}</strong></td>
+                            <td style="font-weight:500">${req.PatientName}</td>
+                            <td style="font-size:0.8rem;color:var(--text-light);font-family:monospace">${req.PatientID}</td>
+                            <td style="font-weight:600">₹${Number(req.ClaimAmount).toLocaleString()}</td>
+                            <td style="color:var(--text-mid);font-size:0.82rem">${req.Reason}</td>
+                            <td id="status-${req.RequestID}">${statusBadge(req.Status)}</td>
+                            <td id="action-${req.RequestID}">${actionButtons}</td>
+                        </tr>
+                    `;
+                }).join('');
+            });
+    }
+
+    function updateStatus(requestId, status) {
+        fetch('/api/update_insurance_status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ request_id: requestId, status })
+        })
+        .then(res => res.json())
+        .then(() => {
+            document.getElementById(`status-${requestId}`).innerHTML = statusBadge(status);
+            document.getElementById(`action-${requestId}`).innerHTML = statusBadge(status);
+            toast(`Request ${status}`, 'success');
+        });
     }
 </script>
 </body>

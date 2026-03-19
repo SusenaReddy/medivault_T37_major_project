@@ -415,7 +415,21 @@
             <div id="reports-container"></div>
         </div>
     </div>
+<form id="prescription-form" enctype="multipart/form-data">
 
+<div class="form-group">
+<label>Patient ID</label>
+<input type="text" name="patient_id" required>
+</div>
+
+<div class="form-group">
+<label>Upload Prescription (PDF/Image)</label>
+<input type="file" name="prescription_file" accept=".pdf,.jpg,.png,.jpeg" required>
+</div>
+
+<button type="submit" class="btn">Upload Prescription</button>
+
+</form>
     <script>
         // Get doctor details on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -565,6 +579,29 @@ function openPdf(filename) {
                 reportsContainer.appendChild(reportCard);
             });
         }
+document.getElementById('prescription-form').addEventListener('submit', function(e){
+
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch('/api/add_prescription', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        this.reset();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Upload failed");
+    });
+
+});
+</script>
+        
     </script>
 </body>
 </html>
